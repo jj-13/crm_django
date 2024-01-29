@@ -1,34 +1,31 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
-function App() {
-  const [count, setCount] = useState(0)
+import { Error404 } from "./containers/errors/Error404"
+import { Home } from "./containers/pages/Home"
+import { Provider } from 'react-redux'
+import store from './Store'
+import { Route, Routes, BrowserRouter as Router } from "react-router-dom"
+import { Casos } from "./containers/pages/Casos"
+import { Servicios } from "./containers/pages/Servicios"
+import { Carreras } from "./containers/pages/Carreras"
+import { Blog } from "./containers/pages/Blog"
+import { Contacto } from "./containers/pages/Contacto"
+import { Nosotros } from "./containers/pages/Nosotros"
+function App() { 
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Provider store={store}>
+      <Router>
+        <Routes>
+          <Route path="*" element={<Error404/>} />
+          <Route path="/" element={<Home/>} />
+          <Route path="/casos" element={<Casos/>} />
+          <Route path="/servicios" element={<Servicios/>} />
+          <Route path="/nosotros" element={<Nosotros/>} />
+          <Route path="/carreras" element={<Carreras/>} />
+          <Route path="/blog" element={<Blog/>} />
+          <Route path="/contacto" element={<Contacto/>} />
+        </Routes>
+      </Router>      
+    </Provider>    
   )
 }
 
