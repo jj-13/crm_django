@@ -1,3 +1,4 @@
+import { useEffect } from "react"
 import { Footer } from "../../components/navigation/Footer"
 import { Navbar } from "../../components/navigation/Navbar"
 import { Layout } from "../../hocs/layouts/Layout"
@@ -6,6 +7,9 @@ import { Header } from "../../components/cases/Header"
 import { CasesList } from "../../components/cases/CasesList"
 
 export const Casos = () => {
+  useEffect(()=>{
+    window.scrollTo(0,0)
+  },[])
   return (
     <Layout>
         <title>Case Studies</title>

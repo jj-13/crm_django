@@ -1,3 +1,4 @@
+import { useEffect } from "react"
 import { Footer } from "../../components/navigation/Footer"
 import { Navbar } from "../../components/navigation/Navbar"
 import { Layout } from "../../hocs/layouts/Layout"
@@ -10,6 +11,10 @@ import {LogoCloud} from "../../components/home/LogoCloud"
 import {BlogList} from "../../components/home/BlogList"
 
 export const Home = () => {
+  useEffect(()=>{
+    window.scrollTo(0,0)
+  },[])
+  
   return (
     <Layout>
         <Navbar />
