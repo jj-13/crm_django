@@ -3,7 +3,7 @@ import loading_dots from '../../assets/img/loading-dots.gif'
 import { Popover, Transition } from '@headlessui/react'
 import { useState, Fragment } from 'react'
 
-
+/* iconos del menu movil */
 const solutions = [
     {
       name: 'Casos',
