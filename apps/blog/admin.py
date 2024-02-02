@@ -1,5 +1,5 @@
 from django.contrib import admin
-from apps.blog.models import Post
+from apps.blog.models import Post, ViewCount
 
 
 class BlogAdmin(admin.ModelAdmin):
@@ -9,3 +9,4 @@ class BlogAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Post, BlogAdmin)
+admin.site.register(ViewCount)
