@@ -9,9 +9,17 @@ def blog_thumbnail_directory(instance, filename):
 
 
 class Post(models.Model):
+    class PostObjects(models.Manager):
+        def get_queryset(self):
+            return super().get_queryset().filter(status='published')
 
     class Meta:
         ordering = ('-published',)
+
+    options = (
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+    )
 
     title = models.CharField(max_length=50)
     slug = models.SlugField(max_length=50, unique=True)
@@ -19,9 +27,12 @@ class Post(models.Model):
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
     description = models.CharField(max_length=100)
     content = RichTextField()
+    status = models.CharField(max_length=10, choices=options, default='draft')
     time_read = models.IntegerField()
     published = models.DateField(default=timezone.now)
     view = models.IntegerField(default=0, blank=True)
+    objects = models.Manager()  # default manager
+    post_objects = PostObjects()  # custom manager
 
     def get_view_count(self):
         views = ViewCount.objects.filter(post=self).count()

@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.db.models.query_utils import Q
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
@@ -18,9 +19,9 @@ class BlogViewSets(viewsets.ModelViewSet):
     def get_queryset(self, slug=None):
 
         if slug is None:
-            return self.get_serializer().Meta.model.objects.all()
+            return self.get_serializer().Meta.model.post_objects.all()
         print(slug)
-        return self.get_serializer().Meta.model.objects.filter(slug=slug)
+        return self.get_serializer().Meta.model.post_objects.filter(slug=slug)
 
     def list(self, request, *args, **kwargs):
         paginator = SmallSetPagination()
@@ -61,6 +62,32 @@ class BlogViewSets(viewsets.ModelViewSet):
             return Response({'message': serializer.data}, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'No post found'}, status=status.HTTP_404_NOT_FOUND)
+
+"""
+para buscar por pk y slug
+class BlogViewSets(viewsets.ModelViewSet):
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        return self.get_serializer().Meta.model.objects.all()
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        filter_kwargs = {self.lookup_field: self.kwargs[self.lookup_field]}
+        obj = get_object_or_404(queryset, **filter_kwargs)
+        return obj
+
+    def retrieve(self, request, *args, **kwargs):
+        try:
+            self.lookup_field = 'pk'
+            instance = self.get_object()
+        except Http404:
+            self.lookup_field = 'slug'
+            instance = self.get_object()
+        print(instance)
+        return Response({'message': 'ok'}, status=status.HTTP_200_OK)
+"""
 
 
 class ListPostByCategoryViewSets(viewsets.ModelViewSet):
@@ -112,4 +139,30 @@ class ListPostByCategoryViewSets(viewsets.ModelViewSet):
             return Response({'error': 'No post found'}, status=status.HTTP_404_NOT_FOUND)
 
 
+class SearchBlogViewSets(viewsets.ModelViewSet):
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = PostSerializer
 
+    # queryset = PostSerializer.Meta.model.objects.all()
+
+    def get_queryset(self, pk=None):
+        if pk is None:
+            return self.get_serializer().Meta.model.post_objects.all()
+        print(pk)
+        return self.get_serializer().Meta.model.post_objects.filter(pk=pk)
+
+    def list(self, request, *args, **kwargs):
+        search_term = request.query_params.get('search_term')
+        matches = self.get_queryset().filter(
+            Q(title__icontains=search_term) |
+            Q(description__icontains=search_term) |
+            Q(category__name__icontains=search_term)
+        )
+        print(matches)
+        paginator = SmallSetPagination()
+        result = paginator.paginate_queryset(matches, request)
+
+        post_serializer = self.get_serializer(result, many=True)
+        post_serializer_paginated = paginator.get_paginated_response(post_serializer.data)
+
+        return Response(post_serializer_paginated.data, status=status.HTTP_200_OK)
