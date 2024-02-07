@@ -4,7 +4,7 @@ from apps.blog.api.viewsets.blog_viewsets import BlogViewSets, ListPostByCategor
 router = DefaultRouter()
 
 router.register(r'blog', BlogViewSets, basename='blog')
-router.register(r'list_categories', ListPostByCategoryViewSets, basename='list_categories')
+router.register(r'list_post_by_categories', ListPostByCategoryViewSets, basename='list_post_by_categories')
 router.register(r'search_blog', SearchBlogViewSets, basename='search_blog')
 
 urlpatterns = router.urls
