@@ -16,7 +16,7 @@ export const getBlogs = async () => {
     response.forEach(category => {
         data.push({
             id: category.id,
-            name: category.title,
+            title: category.title,
             slug: category.slug,
             thumbnail: category.thumbnail,
             category: category.category,
@@ -48,7 +48,7 @@ export const getBlogsPage = async (page) => {
     response.forEach(category => {
         data.push({
             id: category.id,
-            name: category.title,
+            title: category.title,
             slug: category.slug,
             thumbnail: category.thumbnail,
             category: category.category,
@@ -79,7 +79,7 @@ export const getBlogsByCategory = async (category_slug) => {
     response.forEach(category => {
         data.push({
             id: category.id,
-            name: category.title,
+            title: category.title,
             slug: category.slug,
             thumbnail: category.thumbnail,
             category: category.category,
@@ -111,7 +111,7 @@ export const getBlogsByCategoryPage = async (result) => {
     response.forEach(category => {
         data.push({
             id: category.id,
-            name: category.title,
+            title: category.title,
             slug: category.slug,
             thumbnail: category.thumbnail,
             category: category.category,
@@ -137,7 +137,7 @@ export const getBlogsDetail = async (slug) => {
     const data = []
     data.push({
         id: response.id,
-        name: response.title,
+        title: response.title,
         slug: response.slug,
         thumbnail: response.thumbnail,
         category: response.category,
@@ -167,7 +167,7 @@ export const getBlogsSearchPage = async (search_term) => {
     response.forEach(category => {
         data.push({
             id: category.id,
-            name: category.title,
+            title: category.title,
             slug: category.slug,
             thumbnail: category.thumbnail,
             category: category.category,

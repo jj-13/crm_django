@@ -4,6 +4,7 @@ import {useState}from 'react'
 
 export const CategoriesHeader = ({categories}) => {
     const location = useLocation()
+    //console.log(location)
     const navigate = useNavigate()
 
     // SEARCH
@@ -11,9 +12,12 @@ export const CategoriesHeader = ({categories}) => {
     const handleChange = (e) => {
         setTerm(e.target.value);
     }
+
     const onSubmit = (e) => {
         e.preventDefault();
-        setTimeout(() => navigate("/s=" + term), 0.2);
+        //console.log(term)
+        navigate("/blog/search", { state: { s: term} })
+        //setTimeout(() => navigate("/blog/s=" + term), 0.2);
         setTerm("");
     }         
 

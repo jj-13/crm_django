@@ -1,18 +1,14 @@
 import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { Footer } from "../../components/navigation/Footer"
 import { Navbar } from "../../components/navigation/Navbar"
 import { CategoriesHeader } from "../../components/blog/CategoriesHeader"
 import { Layout } from "../../hocs/layouts/Layout"
 import { category } from "../../Store/CategoriesSlice"
-import { blog } from "../../Store/BlogSlice"
-import { blogPages } from "../../Store/BlogPagesSlice"
-import { BlogList } from "../../components/blog/BlogList"
 import { blogsByCategory } from "../../Store/BlogByCategorySlice"
 import { blogsByCategoryPage } from "../../Store/BlogsByCategoryPageSlice"
-import { blogDetail } from "../../Store/BlogsDetailSlice"
-import { blogSearchPages } from "../../Store/BlogsSearchPageSlice"
+
 
 function getParams(url) {
   const myUrl = new URL(url);
@@ -35,32 +31,6 @@ function getCategories(){
   return categories
 }
 
-function getBlogs(){
-  let blogs = localStorage.getItem('blogs')
-  
-  if(blogs){
-    blogs = JSON.parse(blogs)
-    //console.log(blogs)
-  }
-  else{
-    blogs = null
-  }
-  return blogs
-}
-
-function getBlogsDetail(){
-  let blogsDetail = localStorage.getItem('blogs_detail')
-  
-  if(blogsDetail){
-    blogsDetail = JSON.parse(blogsDetail)
-    //console.log(blogsDetail)
-  }
-  else{
-    blogsDetail = null
-  }
-  return blogsDetail
-}
-
 function getBlogsByCategory(){
   let blogsByCategory = localStorage.getItem('blogs_by_categories')
   
@@ -74,27 +44,14 @@ function getBlogsByCategory(){
   return blogsByCategory
 }
 
-function getBlogsSearch(){
-  let blogsSearch = localStorage.getItem('blogs_search_pages')
-  //console.log('search')  
-  if(blogsByCategory){
-    blogsSearch = JSON.parse(blogsSearch)
-    //console.log(blogsSearch)
-    //console.log(blogsSearch.data[0].description)
-  }
-  else{
-    blogsSearch = null
-  }
-  return blogsSearch
-}
 
-export const Blog = () => {
+export const Category = () => {
   const dispatch = useDispatch()
   const [categories, setCategories] = useState(getCategories())
-  const [blogs, setBlogs] = useState(getBlogs())
   const [blogsByCategories, setBlogsByCategories] = useState(getBlogsByCategory())
-  const [blogsDetail, setBlogsDetail] = useState(getBlogsDetail())
-  const [blogsSearch, setblogsSearch] = useState(getBlogsSearch())
+  const params = useParams()
+  const slug = params.slug
+  console.log('Parametro: ' + slug)
   
   useEffect(()=>{
     window.scrollTo(0,0)
@@ -111,10 +68,9 @@ export const Blog = () => {
           //console.log("")
       }*/
     }) 
-    dispatch(blog())
-    dispatch(blogsByCategory('software'))
-    dispatch(blogDetail('code-django'))
-    dispatch(blogSearchPages('python'))
+  
+    dispatch(blogsByCategory(slug))
+ 
    
   },[dispatch])
 
@@ -128,27 +84,8 @@ export const Blog = () => {
         <Navbar />
         <div className="pt-28">
             <CategoriesHeader categories={categories.data}/>
-            <div className="mx-auto max-w-9xl px-4 sm:px-6 lg:px-8">
-              {/* We've used 3xl here, but feel free to try other max-widths based on your needs */}
-              <div className="mx-auto max-w-7xl my-10">
-                <BlogList 
-                  posts={blogs}
-                  get_blog_list_page={[]}
-                  count={1}
-                />
-              </div>
-            </div>  
-            {
-              blogs.next ? <Link to={blogs.next}>Next</Link> : <Link to={blogs.previous}>Previous</Link>
-            }
             {
               blogsByCategories.next ? <button onClick={()=>getBlogsByCategoryPage()}>Next</button> : <Link to={blogsByCategories.previous}>Previous</Link>
-            }
-            {
-              blogsDetail.data.map((detail)=>(detail.id))
-            }
-            {
-              blogsSearch.data.map((search)=>(search.description))
             }
         </div>            
         <Footer />
