@@ -13,12 +13,12 @@ export const BlogList = ({posts, get_blog_list_page, count}) => {
           <BlogCardHorizontal data={post} key={index} index={index}/>
         ))}
       </ul>
-      {/*<SmallSetPagination list_page={get_blog_list_page} list={posts} count={count} />*/}
+      <SmallSetPagination list_page={get_blog_list_page} list={posts} count={count} />
     </div>
   )
 }
 BlogList.propTypes = {    
     posts: PropTypes.object,
-    get_blog_list_page : PropTypes.array,
+    get_blog_list_page : PropTypes.func,
     count: PropTypes.number
 }

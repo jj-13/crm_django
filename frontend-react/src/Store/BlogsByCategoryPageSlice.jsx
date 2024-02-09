@@ -15,7 +15,8 @@ const blogsByCategoryPagesSlice = createSlice({
     initialState:{ 
         rows:[],
         next: '',
-        previous: ''
+        previous: '',
+        count:0
     },
     extraReducers:(builder)=>{
         builder
@@ -29,6 +30,7 @@ const blogsByCategoryPagesSlice = createSlice({
             state.rows = [...action.payload.data]
             state.next =  action.payload.next
             state.previous =  action.payload.previous
+            state.count =  action.payload.count
         })
         .addCase(blogsByCategoryPage.rejected, (state, action)=>{
             console.log('blogsByCategoryPage entro rejected')

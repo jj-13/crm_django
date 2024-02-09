@@ -47,6 +47,18 @@ function getBlogs(){
   }
   return blogs
 }
+function getBlogsPages(){
+  let blogsPages = localStorage.getItem('blogs_pages')
+  
+  if(blogsPages){
+    blogsPages = JSON.parse(blogsPages)
+    //console.log(blogsPages)
+  }
+  else{
+    blogsPages = null
+  }
+  return blogsPages
+}
 
 function getBlogsDetail(){
   let blogsDetail = localStorage.getItem('blogs_detail')
@@ -77,7 +89,7 @@ function getBlogsByCategory(){
 function getBlogsSearch(){
   let blogsSearch = localStorage.getItem('blogs_search_pages')
   //console.log('search')  
-  if(blogsByCategory){
+  if(blogsSearch){
     blogsSearch = JSON.parse(blogsSearch)
     //console.log(blogsSearch)
     //console.log(blogsSearch.data[0].description)
@@ -92,10 +104,11 @@ export const Blog = () => {
   const dispatch = useDispatch()
   const [categories, setCategories] = useState(getCategories())
   const [blogs, setBlogs] = useState(getBlogs())
+  const [blogsPages, seblogsPages] = useState(getBlogsPages())
   const [blogsByCategories, setBlogsByCategories] = useState(getBlogsByCategory())
   const [blogsDetail, setBlogsDetail] = useState(getBlogsDetail())
   const [blogsSearch, setblogsSearch] = useState(getBlogsSearch())
-  
+    
   useEffect(()=>{
     window.scrollTo(0,0)
 
@@ -112,6 +125,7 @@ export const Blog = () => {
       }*/
     }) 
     dispatch(blog())
+    dispatch(blogPages(1))
     dispatch(blogsByCategory('software'))
     dispatch(blogDetail('code-django'))
     dispatch(blogSearchPages('python'))
@@ -121,6 +135,27 @@ export const Blog = () => {
   function getBlogsByCategoryPage(){    
     const result = getParams(blogsByCategories.next)
     dispatch(blogsByCategoryPage(result))  
+  }
+
+  function list_page(page){
+    dispatch(blogPages(page)).then((result) =>{
+      //console.log('actualizando post!!!')
+      //console.log(rows)
+      if (result.payload){
+          console.log(result.payload.data)
+          let updateBlogsPages = localStorage.getItem('blogs_pages')
+          let dataUpdate = JSON.parse(updateBlogsPages)
+          dataUpdate.rows = [...result.payload.data]
+          localStorage.setItem('blogs_pages', JSON.stringify(dataUpdate))
+          seblogsPages(getBlogsPages())
+
+          //localStorage.setItem('blogs', JSON.stringify([result.payload.data]))
+          //setBlogs([result.payload.data])
+          // console.log(result.payload.columns)
+          // console.log(result.payload.data)
+          //console.log("")
+      }
+    }) 
   }
   
   return (
@@ -132,9 +167,9 @@ export const Blog = () => {
               {/* We've used 3xl here, but feel free to try other max-widths based on your needs */}
               <div className="mx-auto max-w-7xl my-10">
                 <BlogList 
-                  posts={blogs}
-                  get_blog_list_page={[]}
-                  count={1}
+                  posts={blogsPages}
+                  get_blog_list_page={list_page}
+                  count={blogsPages.count}
                 />
               </div>
             </div>  

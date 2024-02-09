@@ -3,9 +3,9 @@ import { getBlogsPage } from '../api/blogs.api'
 
 export const blogPages = createAsyncThunk(
     'blogs_pages',
-    async () => {
+    async (page) => {
         //console.log(userCredentials)   
-        const response_api = await getBlogsPage()
+        const response_api = await getBlogsPage(page)
         return response_api
     }
 )
@@ -15,7 +15,8 @@ const blogPagesSlice = createSlice({
     initialState:{ 
         rows:[],
         next:'',
-        previous:''
+        previous:'',
+        count:0
     },
     extraReducers:(builder)=>{
         builder
@@ -29,6 +30,7 @@ const blogPagesSlice = createSlice({
             state.rows = [...action.payload.data]
             state.next =  action.payload.next
             state.previous =  action.payload.previous
+            state.count =  action.payload.count
         })
         .addCase(blogPages.rejected, (state, action)=>{
             console.log('blogPages entro rejected')

@@ -15,7 +15,8 @@ const blogSlice = createSlice({
     initialState:{ 
         rows: [],
         next: '',
-        previous: ''
+        previous: '',
+        count:0
     },
     extraReducers:(builder)=>{
         builder
@@ -29,6 +30,7 @@ const blogSlice = createSlice({
             state.rows = [...action.payload.data]
             state.next =  action.payload.next
             state.previous =  action.payload.previous
+            state.count =  action.payload.count
         })
         .addCase(blog.rejected, (state, action)=>{
             console.log('blog entro rejected')

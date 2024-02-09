@@ -12,6 +12,7 @@ export const getBlogs = async () => {
     const blogsObject = {}
     blogsObject.next = request.data['next']
     blogsObject.previous = request.data['previous']
+    blogsObject.count = request.data['count']
     const data = []
     response.forEach(category => {
         data.push({
@@ -44,6 +45,7 @@ export const getBlogsPage = async (page) => {
     const blogsObject = {}
     blogsObject.next = request.data['next']
     blogsObject.previous = request.data['previous']
+    blogsObject.count = request.data['count']
     const data = []
     response.forEach(category => {
         data.push({
@@ -99,14 +101,15 @@ export const getBlogsByCategory = async (category_slug) => {
 }
 
 export const getBlogsByCategoryPage = async (result) => {
-    console.log(result.category_slug)
+    console.log(result.slug)
     console.log(result.page)
-    const request = await blogsApi.get(`/list_post_by_categories/?category_slug=${result.category_slug}&p=${result.page}`)
+    const request = await blogsApi.get(`/list_post_by_categories/?category_slug=${result.slug}&p=${result.page}`)
     //console.log(request.data)
     const response = request.data['results']
     const blogsObject = {}
     blogsObject.next = request.data['next']
     blogsObject.previous = request.data['previous']
+    blogsObject.count = request.data['count']
     const data = []
     response.forEach(category => {
         data.push({

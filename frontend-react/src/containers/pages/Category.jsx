@@ -6,17 +6,9 @@ import { Navbar } from "../../components/navigation/Navbar"
 import { CategoriesHeader } from "../../components/blog/CategoriesHeader"
 import { Layout } from "../../hocs/layouts/Layout"
 import { category } from "../../Store/CategoriesSlice"
-import { blogsByCategory } from "../../Store/BlogByCategorySlice"
 import { blogsByCategoryPage } from "../../Store/BlogsByCategoryPageSlice"
+import { BlogList } from "../../components/blog/BlogList"
 
-
-function getParams(url) {
-  const myUrl = new URL(url);
-  const params = new URLSearchParams(myUrl.search);
-  const category_slug = params.get('category_slug');
-  const page = params.get('p');
-  return { category_slug, page };
-}
 
 function getCategories(){
   let categories = localStorage.getItem('categories')
@@ -30,32 +22,30 @@ function getCategories(){
   }
   return categories
 }
-
-function getBlogsByCategory(){
-  let blogsByCategory = localStorage.getItem('blogs_by_categories')
+function getBlogsByCategoryPages(){
+  let blogsByCategoryPages = localStorage.getItem('blogs_by_categories_pages')
   
-  if(blogsByCategory){
-    blogsByCategory = JSON.parse(blogsByCategory)
-    //console.log(blogsByCategory)
+  if(blogsByCategoryPages){
+    blogsByCategoryPages = JSON.parse(blogsByCategoryPages)
+    console.log(blogsByCategoryPages)
   }
   else{
-    blogsByCategory = null
+    blogsByCategoryPages = null
   }
-  return blogsByCategory
+  return blogsByCategoryPages
 }
 
 
 export const Category = () => {
   const dispatch = useDispatch()
-  const [categories, setCategories] = useState(getCategories())
-  const [blogsByCategories, setBlogsByCategories] = useState(getBlogsByCategory())
   const params = useParams()
+  const [categories, setCategories] = useState(getCategories())
+  const [blogsByCategoriesPages, setBlogsByCategoriesPages] = useState(getBlogsByCategoryPages())
   const slug = params.slug
-  console.log('Parametro: ' + slug)
-  
+  //console.log('Parametro: ' + slug)    
+
   useEffect(()=>{
     window.scrollTo(0,0)
-
     dispatch(category()).then((result) =>{
       /* console.log('dispatch_categoryProduct')
       // console.log(columns)
@@ -68,15 +58,34 @@ export const Category = () => {
           //console.log("")
       }*/
     }) 
-  
-    dispatch(blogsByCategory(slug))
+    //const slug = getCategory()
+    const page = 1
+    let params = { slug, page }
+    dispatch(blogsByCategoryPage(params))
  
    
   },[dispatch])
 
-  function getBlogsByCategoryPage(){    
-    const result = getParams(blogsByCategories.next)
-    dispatch(blogsByCategoryPage(result))  
+  function list_page(page){
+    let params = { slug, page }
+    dispatch(blogsByCategoryPage(params)).then((result) =>{
+       console.log('actualizando post por categoria!!!')
+      // console.log(rows)
+      if (result.payload){
+          console.log(result.payload.data)
+          let updateBlogsPages = localStorage.getItem('blogs_by_categories_pages')
+          let dataUpdate = JSON.parse(updateBlogsPages)
+          dataUpdate.rows = [...result.payload.data]
+          localStorage.setItem('blogs_by_categories_pages', JSON.stringify(dataUpdate))
+          setBlogsByCategoriesPages(getBlogsByCategoryPages())
+
+          //localStorage.setItem('blogs', JSON.stringify([result.payload.data]))
+          //setBlogs([result.payload.data])
+          // console.log(result.payload.columns)
+          // console.log(result.payload.data)
+          //console.log("")
+      }
+    }) 
   }
   
   return (
@@ -84,9 +93,13 @@ export const Category = () => {
         <Navbar />
         <div className="pt-28">
             <CategoriesHeader categories={categories.data}/>
-            {
-              blogsByCategories.next ? <button onClick={()=>getBlogsByCategoryPage()}>Next</button> : <Link to={blogsByCategories.previous}>Previous</Link>
-            }
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                {/* We've used 3xl here, but feel free to try other max-widths based on your needs */}
+                <div className="mx-auto max-w-6xl my-10">
+                  {/* Content goes here */}
+                  <BlogList posts={blogsByCategoriesPages} get_blog_list_page={list_page} count={blogsByCategoriesPages.count}/>
+                </div>
+            </div>
         </div>            
         <Footer />
     </Layout>

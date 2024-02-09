@@ -3,7 +3,7 @@ from apps.blog.models import Post, ViewCount
 
 
 class BlogAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title')
+    list_display = ('id', 'title', 'category')
     list_display_links = ('title',)
     list_per_page = 30
 
