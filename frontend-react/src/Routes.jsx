@@ -5,6 +5,7 @@ import { Casos } from "./containers/pages/Casos"
 import { Servicios } from "./containers/pages/Servicios"
 import { Carreras } from "./containers/pages/Carreras"
 import { Blog } from "./containers/pages/Blog"
+import { PostDetail } from "./containers/pages/PostDetail"
 import { Search } from "./containers/pages/Search"
 import { Category } from "./containers/pages/Category"
 import { Contacto } from "./containers/pages/Contacto"
@@ -28,6 +29,7 @@ function AnimatedRoutes() {
             <Route path="/nosotros" element={<Nosotros />} />
             <Route path="/carreras" element={<Carreras />} />
             <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<PostDetail />} />
             <Route path="/blog/search" element={<Search />} />
             <Route path="/category/:slug" element={<Category />} />
             <Route path="/contacto" element={<Contacto />} />

@@ -156,6 +156,7 @@ class SearchBlogViewSets(viewsets.ModelViewSet):
         matches = self.get_queryset().filter(
             Q(title__icontains=search_term) |
             Q(description__icontains=search_term) |
+            Q(content__icontains=search_term) |
             Q(category__name__icontains=search_term)
         )
         print(matches)

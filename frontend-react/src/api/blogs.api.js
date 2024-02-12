@@ -159,13 +159,18 @@ export const getBlogsDetail = async (slug) => {
     return blogsObject
 }
 
-export const getBlogsSearchPage = async (search_term) => {
-    const request = await blogsApi.get(`/search_blog/?search_term=${search_term}`)
+export const getBlogsSearchPage = async (params) => {
+    //const request = await blogsApi.get(`/search_blog/?p=${params.page}&search_term=${params.search_term}`)
+    console.log('info search!!!!!!!!!!!!!!!!!!!!!!!')
+    console.log(params.page)
+    console.log(params.search_term)
+    const request = await blogsApi.get(`/search_blog/?p=1&search_term=test`)
     //console.log(request.data)
     const response = request.data['results']
     const blogsObject = {}
     blogsObject.next = request.data['next']
     blogsObject.previous = request.data['previous']
+    blogsObject.count = request.data['count']
     const data = []
     response.forEach(category => {
         data.push({

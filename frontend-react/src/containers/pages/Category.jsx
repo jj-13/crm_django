@@ -64,7 +64,7 @@ export const Category = () => {
     dispatch(blogsByCategoryPage(params))
  
    
-  },[dispatch])
+  },[dispatch, categories, slug])
 
   function list_page(page){
     let params = { slug, page }

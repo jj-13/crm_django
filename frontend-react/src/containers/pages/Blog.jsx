@@ -127,10 +127,10 @@ export const Blog = () => {
     dispatch(blog())
     dispatch(blogPages(1))
     dispatch(blogsByCategory('software'))
-    dispatch(blogDetail('code-django'))
-    dispatch(blogSearchPages('python'))
+    //dispatch(blogDetail('code-django'))
+    //dispatch(blogSearchPages('python'))
    
-  },[dispatch])
+  },[dispatch, blogsPages])
 
   function getBlogsByCategoryPage(){    
     const result = getParams(blogsByCategories.next)
@@ -172,7 +172,8 @@ export const Blog = () => {
                   count={blogsPages.count}
                 />
               </div>
-            </div>  
+            </div> 
+            Total Post: {blogsPages.count} 
             {
               blogs.next ? <Link to={blogs.next}>Next</Link> : <Link to={blogs.previous}>Previous</Link>
             }
@@ -182,9 +183,9 @@ export const Blog = () => {
             {
               blogsDetail.data.map((detail)=>(detail.id))
             }
-            {
+            {/*
               blogsSearch.data.map((search)=>(search.description))
-            }
+          */}
         </div>            
         <Footer />
     </Layout>

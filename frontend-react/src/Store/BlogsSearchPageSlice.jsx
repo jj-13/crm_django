@@ -3,9 +3,9 @@ import { getBlogsSearchPage } from '../api/blogs.api'
 
 export const blogSearchPages = createAsyncThunk(
     'blogs_search_pages',
-    async (search_term) => {
+    async (params) => {
         //console.log(userCredentials)   
-        const response_api = await getBlogsSearchPage(search_term)
+        const response_api = await getBlogsSearchPage(params)
         return response_api
     }
 )
@@ -15,7 +15,8 @@ const blogSearchPagesSlice = createSlice({
     initialState:{ 
         rows:[],
         next:'',
-        previous:''
+        previous:'',
+        count:0
     },
     extraReducers:(builder)=>{
         builder
@@ -29,6 +30,7 @@ const blogSearchPagesSlice = createSlice({
             state.rows = [...action.payload.data]
             state.next =  action.payload.next
             state.previous =  action.payload.previous
+            state.count =  action.payload.count
         })
         .addCase(blogSearchPages.rejected, (state, action)=>{
             console.log('blogSearchPages entro rejected')
