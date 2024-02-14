@@ -12,7 +12,7 @@ export const SmallSetPaginationSearch = ({list_page, list, count, term}) => {
         window.scrollTo(0, 0);
         setCurrentPage(page);
         setActive(page);
-        list_page(term,page)
+        list_page(page, term)
     }
 
     const previous_number = () => {

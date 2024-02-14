@@ -103,8 +103,9 @@ function getBlogsSearch(){
 export const Blog = () => {
   const dispatch = useDispatch()
   const [categories, setCategories] = useState(getCategories())
+  const [loading, setLoading] = useState(true)
   const [blogs, setBlogs] = useState(getBlogs())
-  const [blogsPages, seblogsPages] = useState(getBlogsPages())
+  const [blogsPages, seblogsPages] = useState(null)
   const [blogsByCategories, setBlogsByCategories] = useState(getBlogsByCategory())
   const [blogsDetail, setBlogsDetail] = useState(getBlogsDetail())
   const [blogsSearch, setblogsSearch] = useState(getBlogsSearch())
@@ -124,21 +125,31 @@ export const Blog = () => {
           //console.log("")
       }*/
     }) 
-    dispatch(blog())
-    dispatch(blogPages(1))
-    dispatch(blogsByCategory('software'))
+    //dispatch(blog())
+    //dispatch(blogPages(1))
+    //dispatch(blogsByCategory('software'))
     //dispatch(blogDetail('code-django'))
     //dispatch(blogSearchPages('python'))
-   
-  },[dispatch, blogsPages])
+    const fetchData = async () => {
+      try{
+        await dispatch(blogPages(1))
+        seblogsPages(getBlogsPages)
+      }
+      catch (error){
+        console.log("Error fetching blog details:", error)
+      }
+      finally{
+        setLoading(false)
+      }
+    }
 
-  function getBlogsByCategoryPage(){    
-    const result = getParams(blogsByCategories.next)
-    dispatch(blogsByCategoryPage(result))  
-  }
+    fetchData()
+
+  },[dispatch])
+ 
 
   function list_page(page){
-    dispatch(blogPages(page)).then((result) =>{
+    /* dispatch(blogPages(page)).then((result) =>{
       //console.log('actualizando post!!!')
       //console.log(rows)
       if (result.payload){
@@ -155,7 +166,26 @@ export const Blog = () => {
           // console.log(result.payload.data)
           //console.log("")
       }
-    }) 
+    })  */
+
+    const fetchData = async () => {
+      try{
+        await dispatch(blogPages(page))
+        seblogsPages(getBlogsPages)
+      }
+      catch (error){
+        console.log("Error fetching blog details:", error)
+      }
+      finally{
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }
+
+  if (loading){
+    return <>Loading...</>
   }
   
   return (
@@ -167,25 +197,14 @@ export const Blog = () => {
               {/* We've used 3xl here, but feel free to try other max-widths based on your needs */}
               <div className="mx-auto max-w-7xl my-10">
                 <BlogList 
-                  posts={blogsPages}
+                  posts={blogsPages&&blogsPages}
                   get_blog_list_page={list_page}
-                  count={blogsPages.count}
+                  count={blogsPages.count&&blogsPages.count}
                 />
               </div>
             </div> 
-            Total Post: {blogsPages.count} 
-            {
-              blogs.next ? <Link to={blogs.next}>Next</Link> : <Link to={blogs.previous}>Previous</Link>
-            }
-            {
-              blogsByCategories.next ? <button onClick={()=>getBlogsByCategoryPage()}>Next</button> : <Link to={blogsByCategories.previous}>Previous</Link>
-            }
-            {
-              blogsDetail.data.map((detail)=>(detail.id))
-            }
-            {/*
-              blogsSearch.data.map((search)=>(search.description))
-          */}
+            Total Post: {blogsPages.count&&blogsPages.count} 
+            
         </div>            
         <Footer />
     </Layout>

@@ -4,7 +4,7 @@ import {BlogCardSearch} from "../BlogCardSearch"
 
 
 export const BlogList = ({posts, get_blog_list_page, count, term}) => {
-    console.log('blog posts: ' )
+    console.log('blog posts search: ' )
     console.log(posts)
     
   return (

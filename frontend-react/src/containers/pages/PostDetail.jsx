@@ -11,44 +11,59 @@ import DOMPurify from 'dompurify'
 
 function getBlogsDetail(){
     let local_blogsDetail = localStorage.getItem('blogs_detail')
-    
+
     if(local_blogsDetail){
         local_blogsDetail = JSON.parse(local_blogsDetail)
-      //console.log(blogsDetail)
     }
     else{
         local_blogsDetail = null
     }
     return local_blogsDetail
-  }
+}
 
 export const PostDetail = () => {
     const dispatch = useDispatch()
     const params = useParams()
-    const [blogsDetail, setBlogsDetail] = useState(getBlogsDetail())//quitar el getBlogsDetail y validar el return para los primeros valores undifiend
-
-    const slug = params.slug
+    const [loading, setLoading] = useState(true);
+    const [blogsDetail, setBlogsDetail] = useState(null)
+    const slug = params.slug    
    
     useEffect(()=>{
         window.scrollTo(0,0)
-        dispatch(blogDetail(slug))
-         // Obtenemos el valor actualizado del localStorage       
-        setBlogsDetail(getBlogsDetail())
-               
-        console.log('comparando!!!!!!!!!! ' + slug + ' === ' + blogsDetail.data[0].slug)
-        
+        const fetchData = async () => {
+            try {
+                // Fetch data directly without using localStorage
+                /*
+                //cuando se usa directo desde el payload del api
+                const response = await dispatch(blogDetail(slug));
+                setBlogsDetail(response.payload);
+                */
+                //cuando actualizamos con los datos del localStorage
+                await dispatch(blogDetail(slug))
+                setBlogsDetail(getBlogsDetail())
+            } catch (error) {
+                console.error("Error fetching blog details:", error);
+            } finally {
+                // Set loading to false after the fetch operation completes
+                setLoading(false);
+            }
+        };
+
+        fetchData();
         
     }, [dispatch, slug])
+
+    if (loading) {
+        return <>Loading...</>;
+    }    
   
     return (
         <Layout>
             <Navbar/>
             <div className="pt-28">
+           
             {
-                blogsDetail.data[0].slug
-            }   
-            {
-                blogsDetail.data[0].slug === slug ?
+                blogsDetail && blogsDetail.data && blogsDetail.data[0].slug === slug ? (
                     <div className="pt-24">
                         <div className="relative bg-gray-200">
                             <div className="absolute inset-0">
@@ -63,7 +78,7 @@ export const PostDetail = () => {
                             <h1 className="text-4xl font-bold tracking-tight text-black sm:text-5xl lg:text-6xl">{blogsDetail.data[0].title}</h1>
                                 <div className="min-w-0 flex-1 p-4 pt-8">
                                     <div className="">
-                                        <span className=" hover:text-orange-500  mx-1 font-medium text-gray-800 text-sm "><Link to={`/category/${blogsDetail.data[0].category.slug}`}>{blogsDetail.data[0].category.name}</Link></span> <span className="text-gray-300">&middot;</span> 
+                                        <span className=" hover:text-orange-500  mx-1 font-medium font-extrabold text-blue-800 text-sm "><Link to={`/category/${blogsDetail.data[0].category.slug}`}>{blogsDetail.data[0].category.name}</Link></span> <span className="text-gray-300">&middot;</span> 
                                         <span className="mt-2 ml-2 mr-1 font-medium text-gray-800 text-sm">{moment(blogsDetail.data[0].published).format('LL')}</span> <span className="text-gray-300">&middot;</span>
                                         <span className="mt-2 mx-2 font-medium text-gray-800 text-sm">{blogsDetail.data[0].time_read} min read</span> 
                                         <p className="mt-4 text-lg font-regular text-gray-800 leading-8">{blogsDetail.data[0].description}</p>
@@ -80,8 +95,10 @@ export const PostDetail = () => {
                             </div>
                         </div>
                     </div>
-                :
+                ):
+                (              
                 <>Loading</>
+                )
             }
            
             </div>            

@@ -101,9 +101,12 @@ export const getBlogsByCategory = async (category_slug) => {
 }
 
 export const getBlogsByCategoryPage = async (result) => {
+    console.log('datos de categorias!!!!!!!!!!!!!!!!!!!!!')
+    console.log(result)
     console.log(result.slug)
     console.log(result.page)
     const request = await blogsApi.get(`/list_post_by_categories/?category_slug=${result.slug}&p=${result.page}`)
+    //const request = await blogsApi.get(`/list_post_by_categories/?category_slug=${result.slug}&p=2`)
     //console.log(request.data)
     const response = request.data['results']
     const blogsObject = {}
@@ -160,11 +163,12 @@ export const getBlogsDetail = async (slug) => {
 }
 
 export const getBlogsSearchPage = async (params) => {
-    //const request = await blogsApi.get(`/search_blog/?p=${params.page}&search_term=${params.search_term}`)
-    console.log('info search!!!!!!!!!!!!!!!!!!!!!!!')
-    console.log(params.page)
-    console.log(params.search_term)
-    const request = await blogsApi.get(`/search_blog/?p=1&search_term=test`)
+    
+    //console.log('info search!!!!!!!!!!!!!!!!!!!!!!!')
+    //console.log(params.page)
+    //console.log(params.search_term)
+    //const request = await blogsApi.get(`/search_blog/?p=1&search_term=test`)
+    const request = await blogsApi.get(`/search_blog/?p=${params.page}&search_term=${params.searchParam}`)
     //console.log(request.data)
     const response = request.data['results']
     const blogsObject = {}
@@ -180,7 +184,6 @@ export const getBlogsSearchPage = async (params) => {
             thumbnail: category.thumbnail,
             category: category.category,
             description: category.description,
-            content: category.content,
             status: category.status,
             time_read: category.time_read,
             published: category.published,

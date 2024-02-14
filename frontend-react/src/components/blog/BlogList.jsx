@@ -4,8 +4,8 @@ import {BlogCardHorizontal} from "./BlogCardHorizontal"
 
 
 export const BlogList = ({posts, get_blog_list_page, count}) => {
-    console.log('blog posts: ' )
-    console.log(posts)
+    //console.log('blog posts: ' )
+    //console.log(posts)
     
   return (
     <div className="overflow-hidden px-8 bg-white">

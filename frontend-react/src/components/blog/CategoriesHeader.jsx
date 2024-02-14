@@ -3,6 +3,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom"
 import {useState}from 'react'
 
 export const CategoriesHeader = ({categories}) => {
+    //console.log('info categorias!!!!!!!!!!!!!')
+    //console.log(categories)
     const location = useLocation()
     //console.log(location)
     const navigate = useNavigate()

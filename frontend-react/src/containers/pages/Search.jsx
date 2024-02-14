@@ -3,10 +3,24 @@ import { Link, useParams, useLocation } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { Footer } from "../../components/navigation/Footer"
 import { Navbar } from "../../components/navigation/Navbar"
+import { CategoriesHeader } from "../../components/blog/CategoriesHeader"
 import { BlogList } from "../../components/blog/search/BlogList"
 import { Layout } from "../../hocs/layouts/Layout"
 import { blogSearchPages } from "../../Store/BlogsSearchPageSlice"
 
+
+function getCategories(){
+  let categories = localStorage.getItem('categories')
+  
+  if(categories){
+    categories = JSON.parse(categories)
+    //console.log(categories)
+  }
+  else{
+    categories = null
+  }
+  return categories
+}
 
 function getBlogsSearch(){
   let blogsSearch = localStorage.getItem('blogs_search_pages')
@@ -24,13 +38,13 @@ function getBlogsSearch(){
 
 export const Search = () => {
   const dispatch = useDispatch()
-  const [blogsSearch, setblogsSearch] = useState(getBlogsSearch())
+  const [categories, setCategories] = useState(getCategories())
+  const [blogsSearch, setblogsSearch] = useState(null)
+  const [loading, setLoading] = useState(true)
   const location = useLocation();
   const searchParam = location.state.s
   console.log('Search Parametro: ' + searchParam)
-  const page = 1
-  const params = {searchParam, page}
-  dispatch(blogSearchPages(params))
+ 
   
   useEffect(()=>{
     window.scrollTo(0,0)
@@ -38,45 +52,64 @@ export const Search = () => {
     // const searchParam = 'test'
     // const params = {searchParam, page}
     // dispatch(blogSearchPages(params))
-   
-  }, [])
-
-  function list_page(page){
-    dispatch(blogSearchPages(page)).then((result) =>{
-      //console.log('actualizando post!!!')
-      //console.log(rows)
-      if (result.payload){
-          console.log(result.payload.data)
-          let updateBlogsPages = localStorage.getItem('blogs_search_pages')
-          let dataUpdate = JSON.parse(updateBlogsPages)
-          dataUpdate.rows = [...result.payload.data]
-          localStorage.setItem('blogs_search_pages', JSON.stringify(dataUpdate))
-          setblogsSearch(getBlogsSearch())
-
-          //localStorage.setItem('blogs', JSON.stringify([result.payload.data]))
-          //setBlogs([result.payload.data])
-          // console.log(result.payload.columns)
-          // console.log(result.payload.data)
-          //console.log("")
+    const page = 1
+    const params = {searchParam, page}
+    const fetchData = async () => {
+      try{
+        await dispatch(blogSearchPages(params))
+        setblogsSearch(getBlogsSearch())
       }
-    }) 
+      catch (error){
+        console.log('Error fetching data search blog: ', error)
+      }finally{
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [dispatch, searchParam])
+
+  function list_page(page){   
+    
+    const params = {searchParam, page}
+
+    //dispatch(blogSearchPages(params)) 
+    const fetchData = async () => {
+      try{
+        await dispatch(blogSearchPages(params))
+        setblogsSearch(getBlogsSearch())
+      }
+      catch (error){
+        console.log('Error fetching data search blog: ', error)
+      }finally{
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }
+
+  if (loading){
+    return <>Loading...</>
   }
 
   
   return (
     <Layout>
         <Navbar />
-        <div className="pt-28">    
+        <div className="pt-28"> 
+          <CategoriesHeader categories={categories.data}/> 
           <div className="mx-auto max-w-full px-4 sm:px-6 lg:px-8">
             {/* We've used 3xl here, but feel free to try other max-widths based on your needs */}
             <div className="mx-auto max-w-full my-10">
               {/* Content goes here */}
-              <BlogList posts={blogsSearch} get_blog_list_page={list_page} term={searchParam} count={blogsSearch.count}/>
+              <BlogList 
+                posts={blogsSearch&&blogsSearch} 
+                get_blog_list_page={list_page} 
+                term={searchParam} 
+                count={blogsSearch.count&&blogsSearch.count}
+              />
             </div>
           </div>                         
-            {
-              blogsSearch.data.map((search)=>(search.id))
-            }
+            
         </div>            
         <Footer />
     </Layout>
