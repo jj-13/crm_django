@@ -196,7 +196,8 @@ REST_FRAMEWORK = {
 #CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS_DEV')
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
-    "http://localhost:5173"
+    "http://localhost:5173",
+    "http://localhost:5174"
 ]
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS_DEV')
 
@@ -235,7 +236,7 @@ DJOSER = {
     },
 }
 
-AUTH_USER_MODEL = 'user.UserAccount'
+AUTH_USER_MODEL = 'user.User'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
