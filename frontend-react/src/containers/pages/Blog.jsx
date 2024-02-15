@@ -105,10 +105,10 @@ export const Blog = () => {
   const [categories, setCategories] = useState(getCategories())
   const [loading, setLoading] = useState(true)
   const [blogs, setBlogs] = useState(getBlogs())
-  const [blogsPages, seblogsPages] = useState(null)
-  const [blogsByCategories, setBlogsByCategories] = useState(getBlogsByCategory())
-  const [blogsDetail, setBlogsDetail] = useState(getBlogsDetail())
-  const [blogsSearch, setblogsSearch] = useState(getBlogsSearch())
+  const [blogsPages, setblogsPages] = useState(null)
+  // const [blogsByCategories, setBlogsByCategories] = useState(getBlogsByCategory())
+  // const [blogsDetail, setBlogsDetail] = useState(getBlogsDetail())
+  // const [blogsSearch, setblogsSearch] = useState(getBlogsSearch())
     
   useEffect(()=>{
     window.scrollTo(0,0)
@@ -133,7 +133,7 @@ export const Blog = () => {
     const fetchData = async () => {
       try{
         await dispatch(blogPages(1))
-        seblogsPages(getBlogsPages)
+        setblogsPages(getBlogsPages)
       }
       catch (error){
         console.log("Error fetching blog details:", error)
@@ -171,7 +171,7 @@ export const Blog = () => {
     const fetchData = async () => {
       try{
         await dispatch(blogPages(page))
-        seblogsPages(getBlogsPages)
+        setblogsPages(getBlogsPages)
       }
       catch (error){
         console.log("Error fetching blog details:", error)
