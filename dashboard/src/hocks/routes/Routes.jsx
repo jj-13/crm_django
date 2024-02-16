@@ -1,5 +1,6 @@
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { Error404 } from "../../containers/errors/Error404"
+import { Login } from "../../containers/pages/Login"
 import { Home } from "../../containers/pages/Home"
 import { Blog } from "../../containers/pages/blog/Blog";
 import { Dashboard } from "../../containers/pages/Dashboard";
@@ -15,7 +16,8 @@ function AnimatedRoutes() {
             <Route path="*" element={<Error404 />} />
 
             {/* Home Display */}
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Login />} />
+            <Route path="/home" element={<Home />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/blog" element={<Blog />} />
             

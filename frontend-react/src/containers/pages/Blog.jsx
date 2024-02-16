@@ -104,7 +104,7 @@ export const Blog = () => {
   const dispatch = useDispatch()
   const [categories, setCategories] = useState(getCategories())
   const [loading, setLoading] = useState(true)
-  const [blogs, setBlogs] = useState(getBlogs())
+  //const [blogs, setBlogs] = useState(getBlogs())
   const [blogsPages, setblogsPages] = useState(null)
   // const [blogsByCategories, setBlogsByCategories] = useState(getBlogsByCategory())
   // const [blogsDetail, setBlogsDetail] = useState(getBlogsDetail())
@@ -199,11 +199,11 @@ export const Blog = () => {
                 <BlogList 
                   posts={blogsPages&&blogsPages}
                   get_blog_list_page={list_page}
-                  count={blogsPages.count&&blogsPages.count}
+                  count={blogsPages&&blogsPages&&blogsPages.count&&blogsPages.count}
                 />
               </div>
             </div> 
-            Total Post: {blogsPages.count&&blogsPages.count} 
+            Total Post: {blogsPages&&blogsPages&&blogsPages.count&&blogsPages.count} 
             
         </div>            
         <Footer />

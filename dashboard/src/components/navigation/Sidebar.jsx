@@ -15,7 +15,7 @@ export const Sidebar = () => {
   const location = useLocation()
 
   const navigation = [
-      { name: 'Home', href: '/', icon: HomeIcon, current: location.pathname==='/' ? true:false },
+      { name: 'Home', href: '/home', icon: HomeIcon, current: location.pathname==='/home' ? true:false },
       { name: 'Dashboard', href: '/dashboard', icon: MagnifyingGlassIcon, current: location.pathname==='/dashboard' ? true:false },
       { name: 'Blog', href: '/blog', icon: RssIcon, current: location.pathname==='/blog' ? true:false },
   ]
