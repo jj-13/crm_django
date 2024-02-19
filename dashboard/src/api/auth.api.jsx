@@ -17,13 +17,20 @@ const authApi = axios.create({
     }  
 }*/
 
-export const getLoadUser = async (body) => {
+export const getLoadUser = async (body1) => {
+    console.log(body1.headers)
     
     let formData = new FormData()
     
-    const request = await authApi.get('/auth/users/me/', formData, body.headers)
-    //console.log(request.data)
-    const response = request.data['results']
+    const request = await authApi.get('/users/me/', {}, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `${body1.headers.Authorization}`,
+        },
+        credentials: 'include'
+    }); 
+    console.log(request.data)
+    const response = request.data
     const loadUserObject = {}    
     const data = []
     response.forEach(auth => {
@@ -46,22 +53,20 @@ export const getLoadUser = async (body) => {
 }
 
 export const getLogin = async (body) => {
-    
+    //console.log(body)
     let formData = new FormData()
     formData.append('email', body.form.email)
     formData.append('password', body.form.password)
 
-    const request = await authApi.get('/auth/jwt/create/', formData, body.headers)
+    const request = await authApi.post('/jwt/create/', formData, body.headers)
     //console.log(request.data)
-    const response = request.data['results']
+    const response = request.data
     const loginObject = {}    
     const data = []
-    response.forEach(auth => {
-        data.push({
-            refresh: auth.refresh,
-            access: auth.access            
-        })
-    });
+    data.push({
+        refresh: response.refresh,
+        access: response.access            
+    })
     console.log(request.status)
     console.log(response)
     console.log(loginObject)

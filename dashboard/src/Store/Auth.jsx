@@ -3,18 +3,18 @@ import { getLogin, getLoadUser, getCheckAuthenticated, getResetPassword, getRese
 
 export const auth = createAsyncThunk(
     'auth',
-    async () => {
-        //console.log(userCredentials)   
-        const response_api = await getLogin()
+    async (body) => {
+        //console.log(body)  
+        const response_api = await getLogin(body)
         return response_api
     }
 )
 
 export const authLoadUser = createAsyncThunk(
     'auth/load',
-    async () => {
-        //console.log(userCredentials)   
-        const response_api = await getLoadUser()
+    async (body1) => {
+        //console.log(headers)   
+        const response_api = await getLoadUser(body1)
         return response_api
     }
 )
@@ -76,7 +76,7 @@ const authSlice = createSlice({
             console.log('auth entro fulfilled')
             state.access = action.payload.access
             state.refresh =  action.payload.refresh
-            state.isAuthenticated =  true
+            state.isAuthenticated =  true  
         })
         .addCase(auth.rejected, (state, action)=>{
             console.log('auth entro rejected')
