@@ -30,18 +30,18 @@ export const authCheckAuthenticated = createAsyncThunk(
 
 export const authResetPassword = createAsyncThunk(
     'auth/resetPassword',
-    async () => {
+    async (body) => {
         //console.log(userCredentials)   
-        const response_api = await getResetPassword()
+        const response_api = await getResetPassword(body)
         return response_api
     }
 )
 
 export const authResetPasswordConfirm = createAsyncThunk(
     'auth/resetPasswordConfirm',
-    async () => {
+    async (body) => {
         //console.log(userCredentials)   
-        const response_api = await getResetPasswordConfirm()
+        const response_api = await getResetPasswordConfirm(body)
         return response_api
     }
 )
@@ -53,6 +53,14 @@ export const authRefresh = createAsyncThunk(
         const response_api = await getRefresh()
         return response_api
     }
+)
+
+export const authLogout = createAsyncThunk(
+    'auth/logout',  
+    async () => {
+        //console.log(userCredentials) 
+        return {}
+    }  
 )
 
 const authSlice = createSlice({
@@ -104,7 +112,7 @@ const authSlice = createSlice({
         })
         .addCase(authLoadUser.fulfilled, (state, action)=>{
             console.log('authLoadUser entro fulfilled')  
-            state.user = action.payload.data
+            state.user = {...action.payload}
             state.user_loading = false
         })
         .addCase(authLoadUser.rejected, (state, action)=>{
@@ -207,6 +215,40 @@ const authSlice = createSlice({
             }
             else{
                 console.log('authRefresh entro 400 backend')
+                state.error = action.error.message
+                state.access = null
+                state.refresh = null
+                state.isAuthenticated = false
+                state.user = null                 
+            }
+        }) 
+        //authLogout
+        .addCase(authLogout.pending, (state)=>{
+            console.log('authLogout entro pending')            
+        })
+        .addCase(authLogout.fulfilled, (state, action)=>{
+            console.log('authLogout entro fulfilled') 
+            localStorage.removeItem('login')
+            localStorage.removeItem('load_user')
+            localStorage.removeItem('categories')
+            localStorage.removeItem('author_blogs_pages')
+            state.access = null
+            state.refresh = null
+            state.isAuthenticated = false
+            state.user = null
+        })
+        .addCase(authLogout.rejected, (state, action)=>{
+            console.log('authLogout entro rejected')
+            console.log(action.error.message)
+            if(action.error.message === 'Request failed with status code 401'){
+                state.error = 'Access denied! invalid credentials'  
+                state.access = null
+                state.refresh = null
+                state.isAuthenticated = false
+                state.user = null              
+            }
+            else{
+                console.log('authLogout entro 400 backend')
                 state.error = action.error.message
                 state.access = null
                 state.refresh = null

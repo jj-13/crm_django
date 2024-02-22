@@ -1,29 +1,33 @@
 import PropTypes from 'prop-types'
 import { Fragment, useEffect, useState } from 'react'
+import { useDispatch, useSelector } from "react-redux"
 import { Dialog, Transition } from '@headlessui/react'
 import { Link, useNavigate } from 'react-router-dom'
 import {motion} from 'framer-motion'
 import {Sidebar} from '../../components/navigation/Sidebar'
 import { Bars3Icon, XMarkIcon, CheckIcon} from '@heroicons/react/24/outline'
+import { authCheckAuthenticated, authLoadUser, authRefresh, authLogout } from "../../Store/Auth"
+import { selectUser } from "../../Store/Selector"
 
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
-
-function logout(){
-
-}
 
 export const Layout = ({children}) => {
   //console.log(typeof(children))
-  const navigate=useNavigate()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [open, setOpen] = useState(false)
+  const user = useSelector(selectUser)
+
+   /* useEffect(()=>{
+
+    dispatch(authRefresh())
+    dispatch(authCheckAuthenticated())
+    dispatch(authLoadUser())
+  }, [dispatch])  */
 
   const handleLogout=()=>{
-    logout()
+    dispatch(authLogout())
     navigate('/')
   }
   
@@ -121,16 +125,16 @@ export const Layout = ({children}) => {
                 <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
                 <div className="flex flex-shrink-0 items-center px-4">
                 <Link to='/' className="ml-4 mt-2">
-                        <img
-                            src={'https://bafybeiczl4dcxupma2zeyilkukfl4yge64axnhajd722wxgin62mtts6uy.ipfs.w3s.link/murkivamarketing.png'}
-                            width={160}
-                            height={160}
-                            className=""
-                        />
-                        </Link>
+                    <img
+                        src={'https://bafybeiczl4dcxupma2zeyilkukfl4yge64axnhajd722wxgin62mtts6uy.ipfs.w3s.link/murkivamarketing.png'}
+                        width={160}
+                        height={160}
+                        className=""
+                    />
+                </Link>
                 </div>
                 <nav className="mt-5 flex-1 space-y-1 bg-white px-2">
-                    <Sidebar/>
+                <Sidebar/>
                 </nav>
                 </div>
                 <div className="flex flex-shrink-0 border-t border-gray-200 p-4">
@@ -144,7 +148,7 @@ export const Layout = ({children}) => {
                     </span>
                     </div>
                     <div className="ml-3">
-                        <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900">{/*user&&user.email*/}user.email</p>
+                        <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900">{user&&user.email}</p>
                         <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">Logout</p>
                     </div>
                     </div>
@@ -207,11 +211,11 @@ export const Layout = ({children}) => {
                     </div>
                     <div className="mt-3 text-center sm:mt-5">
                         <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
-                        Payment successful
+                        Close Session
                         </Dialog.Title>
                         <div className="mt-2">
                         <p className="text-sm text-gray-500">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur amet labore.
+                            Thanks for use our services.
                         </p>
                         </div>
                     </div>

@@ -167,3 +167,30 @@ class SearchBlogViewSets(viewsets.ModelViewSet):
         post_serializer_paginated = paginator.get_paginated_response(post_serializer.data)
 
         return Response(post_serializer_paginated.data, status=status.HTTP_200_OK)
+
+
+class AutorBlogViewSets(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = PostSerializer
+    lookup_field = 'author'  # This tells Django to use 'slug' instead of 'pk'
+    #queryset = PostSerializer.Meta.model.objects.all()
+
+    def get_queryset(self, author=None):
+
+        if author is None:
+            return self.get_serializer().Meta.model.post_objects.all()
+        return self.get_serializer().Meta.model.post_objects.filter(author=author)
+
+    def list(self, request, *args, **kwargs):
+        paginator = SmallSetPagination()
+        user = self.request.user
+        queryset = self.get_queryset(user)
+
+        if queryset.exists():
+            result = paginator.paginate_queryset(queryset, request)
+            post_serializer = self.get_serializer(result, many=True)
+            post_serializer_paginated = paginator.get_paginated_response(post_serializer.data)
+
+            return Response(post_serializer_paginated.data, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'No post found'}, status=status.HTTP_404_NOT_FOUND)

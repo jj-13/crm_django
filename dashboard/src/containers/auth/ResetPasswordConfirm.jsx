@@ -1,53 +1,30 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector  } from "react-redux"
 import { useForm } from "react-hook-form"
-import { Link, Navigate } from "react-router-dom";
+import { Navigate, useNavigate , useParams } from "react-router-dom";
 import { LockClosedIcon } from '@heroicons/react/20/solid'
-import { authCheckAuthenticated, authLoadUser, auth, authRefresh } from "../../Store/Auth"
+import { authCheckAuthenticated, authLoadUser, authResetPasswordConfirm, authRefresh } from "../../Store/Auth"
 import { selectIsAuthenticated } from "../../Store/Selector"
 
-function getAcces(){
-  let access = localStorage.getItem('login')
-  
-  if(access){
-    access = JSON.parse(access)
-    //console.log(blogs)
-  }
-  else{
-    access = null
-  }
-  return access
-}
 
-function getHeaders(access){
-  const body1 = {                              
-    headers: {              
-      'Content-Type': 'application/json', // Agrega el encabezado Content-Type  
-      'Accept': 'application/json',  
-      'Authorization': `JWT ${access.data[0].access}`
-    } 
-  }  
+export const ResetPasswordConfirm = () => {
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const {register, handleSubmit, 
+        formState:{errors}, watch, setValue, reset} = useForm()
+    const isAuthenticated = useSelector(selectIsAuthenticated)
 
-  return body1
-}
-
-export const Login = () => {
-  const dispatch = useDispatch()
-  const {register, handleSubmit, 
-    formState:{errors}, watch, setValue, reset} = useForm()
-  const isAuthenticated = useSelector(selectIsAuthenticated)
-  const [access, setAccess] = useState(getAcces())
+    const params = useParams()
+    const uid = params.uid
+    const token = params.token
   
     useEffect(()=>{
-      
       isAuthenticated ? <></>:
       <>      
       {authRefresh()}
       {authCheckAuthenticated()}
       {/*authLoadUser()*/}
       </>
-
-      
 
       
     },[isAuthenticated])
@@ -59,30 +36,18 @@ export const Login = () => {
             
             const body = {
               form: {
-                email: data.email,
-                password: data.password,
+                uid: uid,
+                token: token,
+                new_password: data.password,
+                re_new_password: data.password,
               },              
               headers: {              
                   'Content-Type': 'application/json', // Agrega el encabezado Content-Type                
               } 
             }
-            await dispatch(auth(body)).then((result) =>{
-              if (result.payload){     
-                //console.log(result.payload.data[0].access) 
-                //'Authorization': `JWT ${result.payload.data[0].access}` 
-                const body1 = {                              
-                  headers: {              
-                    'Content-Type': 'application/json', // Agrega el encabezado Content-Type  
-                    'Accept': 'application/json',  
-                    'Authorization': `JWT ${result.payload.data[0].access}`
-                  } 
-                }          
+            await dispatch(authResetPasswordConfirm(body))
+            navigate('/')
 
-                dispatch(authLoadUser(body1))
-              }
-          }).catch((error) => {
-             console.log(error)
-          })
           }
           catch (error){
             console.log("Error fetching Login data:", error)
@@ -98,10 +63,6 @@ export const Login = () => {
     if(isAuthenticated){
       return <Navigate to='/dashboard'/>
     }
-
-   /*  if (access){
-      dispatch(authLoadUser(getHeaders(access)))
-    } */
     
     
 
@@ -119,36 +80,36 @@ export const Login = () => {
           <form onSubmit={onSubmit} className="mt-8 space-y-6">
             <input type="hidden" name="remember" defaultValue="true" />
             <div className="-space-y-px rounded-md shadow-sm">
-              <div>
-                <label htmlFor="email-address" className="sr-only">
-                  Email address
+            <div>
+                <label htmlFor="new_password" className="sr-only">
+                  Password
                 </label>
                 <input
-                  id="email-address"
-                  name="email"                  
-                  type="email"                  
-                  className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                  placeholder="Email address"
-                  {...register('email', {
+                  id="new_password"
+                  name="new_password"                  
+                  type="password"                  
+                  className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                  placeholder="New password"
+                  {...register('new_password', {
                     required: {
                         value: true,
                         message: "es requerido"
                       }
                     })
-                  }
+                  }                  
                 />
               </div>
               <div>
-                <label htmlFor="password" className="sr-only">
-                  Password
+                <label htmlFor="re_new_password" className="sr-only">
+                  Repit Password
                 </label>
                 <input
-                  id="password"
-                  name="password"                  
+                  id="re_new_password"
+                  name="re_new_password"                  
                   type="password"                  
                   className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                  placeholder="Password"
-                  {...register('password', {
+                  placeholder="repit new password"
+                  {...register('re_new_password', {
                     required: {
                         value: true,
                         message: "es requerido"
@@ -159,12 +120,6 @@ export const Login = () => {
               </div>
             </div>
             
-            <div className="text-sm">
-              <Link to='/forgot_password' className="font-medium text-indigo-600 hover:text-indigo-500">
-                Forgot your password?
-              </Link>              
-            </div>
-
             <div>
               <button
                 type="submit"
@@ -173,7 +128,7 @@ export const Login = () => {
                 <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                   <LockClosedIcon className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
                 </span>
-                Sign in
+                Change Pasword
               </button>
             </div>
           </form>         

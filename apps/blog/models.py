@@ -1,8 +1,10 @@
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from ckeditor.fields import RichTextField
 from apps.category.models import Category
 
+User = settings.AUTH_USER_MODEL
 
 def blog_thumbnail_directory(instance, filename):
     return 'blog/{0}/{1}'.format(instance.title, filename)
@@ -24,6 +26,7 @@ class Post(models.Model):
     title = models.CharField(max_length=50)
     slug = models.SlugField(max_length=50, unique=True)
     thumbnail = models.ImageField(upload_to=blog_thumbnail_directory, max_length=500)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
     description = models.CharField(max_length=100)
     content = RichTextField()
