@@ -6,10 +6,10 @@ import {Layout} from '../../../hocks/layouts/Layout'
 import { category } from "../../../Store/CategoriesSlice"
 import { BlogList } from "../../../components/blog/BlogList"
 import { authorBlogPages } from "../../../Store/Blog"
-import { blogDetail } from "../../../Store/BlogsDetailSlice"
+import { blogDetail, blogUpdateDetail } from "../../../Store/BlogsDetailSlice"
 import { PaperClipIcon } from '@heroicons/react/20/solid'
-import { selecAuthorBlogs, selecAuthorBlogsDetail } from "../../../Store/Selector"
-
+import { selectUser, selecAuthorBlogs, selecAuthorBlogsDetail } from "../../../Store/Selector"
+import slugify from 'slugify'
 function getCategories(){
   let categories = localStorage.getItem('categories')
   
@@ -37,12 +37,14 @@ function getAcces(){
 }
 
 export const EditPost = () => {
-  const dispatch = useDispatch()  
+  const dispatch = useDispatch() 
+  const navigate = useNavigate()
   const [access, setAccess] = useState(getAcces())
   const [loading, setLoading] = useState(true)
   const [categories, setCategories] = useState(getCategories())
   const authorBlogsPages = useSelector(selecAuthorBlogs)
   const authorBlogsDeatil = useSelector(selecAuthorBlogsDetail)
+  const infoUserBlogsDeatil = useSelector(selectUser)
 
   const [open, setOpen] = useState(false)
   const [openDelete, setOpenDelete] = useState(false)
@@ -71,8 +73,10 @@ export const EditPost = () => {
 
   }, [dispatch, slug])
 
+ 
+
   const [updateTitle, setUpdateTitle]=useState(false)
-const [updateSlug, setUpdateSlug]=useState(false)
+  const [updateSlug, setUpdateSlug]=useState(false)
 const [updateDescription, setUpdateDescription]=useState(false)
 const [updateContent, setUpdateContent]=useState(false)
 const [updateCategory, setUpdateCategory]=useState(false)
@@ -80,8 +84,87 @@ const [updateThumbnail, setUpdateThumbnail]=useState(false)
 const [updateTime, setUpdateTime]=useState(false)
 const [content, setContent]=useState('')
 
+const resetStates=()=>{
+    setUpdateTitle(false)
+    setUpdateSlug(false)
+    setUpdateDescription(false)
+    setUpdateContent(false)
+    setUpdateCategory(false)
+    setUpdateThumbnail(false)
+    setUpdateTime(false)
+}
+
+
 const onSubmit = handleSubmit( (data) => {
-    console.log(data.title)   
+    //console.log(data.title, infoUserBlogsDeatil.email)   
+    const fetchData = async () => {
+        try{          
+            const body = { 
+                slug: slug, 
+                form: {
+                    title: data.title,
+                    new_slug: data.new_slug,
+                },                            
+                headers: {              
+                    'Content-Type': 'application/json', // Agrega el encabezado Content-Type  
+                    'Accept': 'application/json',  
+                    'Authorization': `JWT ${access.data[0].access}`
+                }, 
+                params:{
+                    user: infoUserBlogsDeatil.email,
+                }
+            }   
+          
+            await dispatch(blogUpdateDetail(body))
+            .then((result) =>{
+                if (result.payload){     
+                    setLoading(true)
+
+                    const fetchData = async () => {
+                        try {
+                            setLoading(false)
+                            // await dispatch(blogDetail(slug))
+                            console.log('new slug')
+                            console.log(data.new_slug) //hacer el slugify
+                            
+
+                           if(data.new_slug !== undefined){
+                                
+                                const strings = slugify(data.new_slug)
+                                console.log(strings)
+                                await dispatch(blogDetail(strings))
+                                navigate(-1)
+                            }else{
+                                await dispatch(blogDetail(slug))
+                            } 
+                            
+                        } catch (error) {
+                            setLoading(false)
+                            setUpdateTitle(false)
+                            console.error("Error fetching blog details:", error)
+                        } finally {
+                            // Set loading to false after the fetch operation completes
+                            setLoading(false);
+                        }
+                    };
+                
+                    fetchData();
+
+                }
+            }).catch((error) => {
+                setLoading(false)
+            })
+        }
+        catch (error){
+          setLoading(false)
+          console.log("Error fetching Login data:", error)
+        }
+        finally{
+          //setLoading(false)
+        }
+      }
+  
+      fetchData()
 })
 
 
@@ -253,26 +336,69 @@ const onSubmit = handleSubmit( (data) => {
                                             </button>
                                         </span>
                                     </>
+                                }
+                            
+                            </dd>
+                        </div>
+
+                        <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+                            <dt className="text-sm font-medium text-gray-500">Slug</dt>
+                            <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                                {
+                                    updateSlug ?
+                                    <>
+                                        <form onSubmit={onSubmit} className="flex w-full">
+
+                                            <span className="flex-grow">
+                                                <input                                                
+                                                name='new_slug'
+                                                type='text'
+                                                className="border border-gray-400 rounded-lg w-full"
+                                                {...register('new_slug', {
+                                                    required: {
+                                                        value: true,
+                                                        message: "es requerido"
+                                                        }
+                                                    })
+                                                }
+                                                />
+                                            </span>
+                                            <span className="ml-4 flex-shrink-0">
+                                                <button
+                                                type="submit"
+                                                className="rounded-md mr-2 bg-white font-medium text-indigo-600 hover:text-indigo-500"
+                                                >
+                                                Save
+                                                </button>
+                                                <div
+                                                onClick={()=>setUpdateSlug(false)}
+                                                className="cursor-pointer inline-flex rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500"
+                                                >
+                                                Cancel
+                                                </div>
+                                            </span>
+                                        </form>
+                                    </>:
+                                    <>
+                                        <span className="flex-grow">{authorBlogsDeatil.slug}</span>
+                                        <span className="ml-4 flex-shrink-0">
+                                            <button
+                                            onClick={()=>setUpdateSlug(true)}
+                                            className="rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                            >
+                                            Update
+                                            </button>
+                                        </span>
+                                    </>
 
                                 }
                             
                             </dd>
                         </div>
 
-                    <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-                        <dt className="text-sm font-medium text-gray-500">Application for</dt>
-                        <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                        <span className="flex-grow">Backend Developer</span>
-                        <span className="ml-4 flex-shrink-0">
-                            <button
-                            onClick={()=>setUpdateTitle(true)}
-                            className="rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                            >
-                            Update
-                            </button>
-                        </span>
-                        </dd>
-                    </div>
+
+                        
+
                     <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
                         <dt className="text-sm font-medium text-gray-500">Email address</dt>
                         <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">

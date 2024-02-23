@@ -262,3 +262,39 @@ export const getBlogsDetail = async (slug) => {
     //console.log(personaTable)
     return blogsObject
 }
+
+export const getBlogsUpdateDetail = async (body) => {
+    
+    let formData = new FormData()    
+    formData.append('title', body.form.title)
+    formData.append('slug', body.slug)
+    formData.append('new_slug', body.form.new_slug)
+    
+    const request = await blogApi.put(`/blog/${body.slug}/`, formData, {
+        headers:  body.headers,
+        params: body.params
+    })    
+    const response = request.data/*.message
+    const blogsObject = {}    
+    const data = []
+    data.push({
+        id: response.id,
+        title: response.title,
+        slug: response.slug,
+        thumbnail: response.thumbnail,
+        category: response.category,
+        description: response.description,
+        content: response.content,
+        status: response.status,
+        time_read: response.time_read,
+        published: response.published,
+        view: response.view
+    })
+    console.log(request.status)
+    console.log(response)
+    blogsObject.data = data    
+    localStorage.setItem('blogs_detail', JSON.stringify(blogsObject))
+    //console.log(personaTable)
+    return blogsObject*/
+    return response
+}

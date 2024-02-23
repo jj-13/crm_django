@@ -1,27 +1,33 @@
 from django.shortcuts import get_object_or_404
 from django.db.models.query_utils import Q
 from rest_framework import viewsets
-from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
+from rest_framework.response import Response
+from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from apps.blog.api.serializers.blog_serializers import PostSerializer, PostListSerializer
 from apps.blog.api.pagination import SmallSetPagination, MediumSetPagination, LargeSetPagination
 from apps.category.models import Category
 from apps.blog.models import ViewCount
+from apps.blog.permissions import IsPostAuthorOrReadOnly
+from slugify import slugify
 
 
 class BlogViewSets(viewsets.ModelViewSet):
-    permission_classes = (permissions.AllowAny,)
+    #permission_classes = (permissions.AllowAny,)
+    permission_classes = (IsPostAuthorOrReadOnly, )
     serializer_class = PostSerializer
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
     lookup_field = 'slug'  # This tells Django to use 'slug' instead of 'pk'
     #queryset = PostSerializer.Meta.model.objects.all()
+
 
     def get_queryset(self, slug=None):
 
         if slug is None:
             return self.get_serializer().Meta.model.post_objects.all()
-        print(slug)
-        return self.get_serializer().Meta.model.post_objects.filter(slug=slug)
+        #print(slug)
+        return self.get_serializer().Meta.model.post_objects.get(slug=slug)#filter.()
 
     def list(self, request, *args, **kwargs):
         paginator = SmallSetPagination()
@@ -37,7 +43,7 @@ class BlogViewSets(viewsets.ModelViewSet):
 
     def retrieve(self, request, slug=None, *args, **kwargs):
         #print(pk)
-        print(self.get_object())
+        #print(self.get_object())
         if self.get_object():
             post = self.get_object()
             serializer = self.serializer_class(self.get_object())
@@ -47,13 +53,13 @@ class BlogViewSets(viewsets.ModelViewSet):
                 ip = address.split(',')[-1].strip()
             else:
                 ip = request.META.get('REMOTE_ADDR')
-            print(ip)
+            #print(ip)
 
             if not ViewCount.objects.filter(post=post, ip_address=ip):
                 view = ViewCount(post=post, ip_address=ip)
                 view.save()
                 post.view += 1
-                print(post.view)
+                #print(post.view)
                 post.save()
             # item = get_object_or_404(self.queryset(), pk=pk)
             # serializer = self.serializer_class(item)
@@ -62,6 +68,28 @@ class BlogViewSets(viewsets.ModelViewSet):
             return Response({'message': serializer.data}, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'No post found'}, status=status.HTTP_404_NOT_FOUND)
+
+    def update(self, request, *args, **kwargs):
+        #user = self.request.user
+        user = request.query_params.get('user')
+        data = self.request.data
+        slug = slugify(data['slug'])
+        post = self.get_queryset(slug)
+        print(post)
+
+        if data['title']:
+            if not (data['title'] == 'undefined'):
+                post.title = data['title']
+                post.save()
+
+        if data['new_slug']:
+            if not (data['new_slug'] == 'undefined'):
+                post.slug = slugify(data['new_slug']) #slugify permite agregar - en los espacios jem: esto es el ejm: esto-es-el-ejm
+                post.save()
+
+        print(user)
+        print(data)
+        return Response({'success': 'Post Edited'})
 
 """
 para buscar por pk y slug
@@ -148,7 +176,7 @@ class SearchBlogViewSets(viewsets.ModelViewSet):
     def get_queryset(self, pk=None):
         if pk is None:
             return self.get_serializer().Meta.model.post_objects.all()
-        print(pk)
+        #print(pk)
         return self.get_serializer().Meta.model.post_objects.filter(pk=pk)
 
     def list(self, request, *args, **kwargs):
@@ -159,7 +187,7 @@ class SearchBlogViewSets(viewsets.ModelViewSet):
             Q(content__icontains=search_term) |
             Q(category__name__icontains=search_term)
         )
-        print(matches)
+        #print(matches)
         paginator = SmallSetPagination()
         result = paginator.paginate_queryset(matches, request)
 
@@ -170,7 +198,8 @@ class SearchBlogViewSets(viewsets.ModelViewSet):
 
 
 class AutorBlogViewSets(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (IsPostAuthorOrReadOnly,)
+    parser_classes = [MultiPartParser, FormParser]
     serializer_class = PostSerializer
     lookup_field = 'author'  # This tells Django to use 'slug' instead of 'pk'
     #queryset = PostSerializer.Meta.model.objects.all()
@@ -184,6 +213,7 @@ class AutorBlogViewSets(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         paginator = SmallSetPagination()
         user = self.request.user
+        print(user)
         queryset = self.get_queryset(user)
 
         if queryset.exists():
@@ -194,3 +224,4 @@ class AutorBlogViewSets(viewsets.ModelViewSet):
             return Response(post_serializer_paginated.data, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'No post found'}, status=status.HTTP_404_NOT_FOUND)
+
