@@ -28,6 +28,7 @@ class BlogViewSets(viewsets.ModelViewSet):
             return self.get_serializer().Meta.model.post_objects.all()
         #print(slug)
         return self.get_serializer().Meta.model.post_objects.get(slug=slug)#filter.()
+        #return self.get_serializer().Meta.model.post_objects.filter(slug=slug)
 
     def list(self, request, *args, **kwargs):
         paginator = SmallSetPagination()
@@ -73,7 +74,7 @@ class BlogViewSets(viewsets.ModelViewSet):
         #user = self.request.user
         user = request.query_params.get('user')
         data = self.request.data
-        slug = slugify(data['slug'])
+        slug = data['slug']
         post = self.get_queryset(slug)
         print(post)
 
@@ -85,6 +86,33 @@ class BlogViewSets(viewsets.ModelViewSet):
         if data['new_slug']:
             if not (data['new_slug'] == 'undefined'):
                 post.slug = slugify(data['new_slug']) #slugify permite agregar - en los espacios jem: esto es el ejm: esto-es-el-ejm
+                post.save()
+
+        if data['description']:
+            if not (data['description'] == 'undefined'):
+                post.description = data['description']
+                post.save()
+
+        if data['content']:
+            if not (data['content'] == 'undefined'):
+                post.content = data['content']
+                post.save()
+
+        if data['category']:
+            if not (data['category'] == 'undefined'):
+                category_id = int(data['category'])
+                category = Category.objects.get(id=category_id)
+                post.category = category
+                post.save()
+
+        if data['thumbnail']:
+            if not (data['thumbnail'] == 'undefined'):
+                post.thumbnail = data['thumbnail']
+                post.save()
+
+        if data['status']:
+            if not (data['status'] == 'undefined'):
+                post.status = data['status']
                 post.save()
 
         print(user)
@@ -199,7 +227,7 @@ class SearchBlogViewSets(viewsets.ModelViewSet):
 
 class AutorBlogViewSets(viewsets.ModelViewSet):
     permission_classes = (IsPostAuthorOrReadOnly,)
-    parser_classes = [MultiPartParser, FormParser]
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
     serializer_class = PostSerializer
     lookup_field = 'author'  # This tells Django to use 'slug' instead of 'pk'
     #queryset = PostSerializer.Meta.model.objects.all()

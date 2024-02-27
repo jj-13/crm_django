@@ -226,7 +226,8 @@ export const getCategories = async () => {
             id: category.id,
             name: category.name,
             slug: category.slug,
-            view: category.view
+            view: category.view,
+            sub_category: category.sub_category
         })
     });
     //console.log(request.status)
@@ -264,37 +265,80 @@ export const getBlogsDetail = async (slug) => {
 }
 
 export const getBlogsUpdateDetail = async (body) => {
-    
-    let formData = new FormData()    
-    formData.append('title', body.form.title)
-    formData.append('slug', body.slug)
-    formData.append('new_slug', body.form.new_slug)
-    
-    const request = await blogApi.put(`/blog/${body.slug}/`, formData, {
-        headers:  body.headers,
-        params: body.params
-    })    
-    const response = request.data/*.message
-    const blogsObject = {}    
-    const data = []
-    data.push({
-        id: response.id,
-        title: response.title,
-        slug: response.slug,
-        thumbnail: response.thumbnail,
-        category: response.category,
-        description: response.description,
-        content: response.content,
-        status: response.status,
-        time_read: response.time_read,
-        published: response.published,
-        view: response.view
-    })
-    console.log(request.status)
-    console.log(response)
-    blogsObject.data = data    
-    localStorage.setItem('blogs_detail', JSON.stringify(blogsObject))
-    //console.log(personaTable)
-    return blogsObject*/
-    return response
+    var lengthBody = Object.keys(body).length
+    console.log('tamaño del body: ', lengthBody)
+
+    if (lengthBody === 4){
+        let formData = new FormData()    
+        formData.append('title', body.form.title)
+        formData.append('slug', body.slug)
+        formData.append('new_slug', body.form.new_slug)
+        formData.append('description', body.form.description)
+        //formData.append('content', body.form.content)
+        formData.append('category', body.form.category)
+        formData.append('status', 'undefined')
+        //formData.append('thumbnail', body.form.thumbnail, body.form.thumbnail.name)
+
+        if(body.form.content){
+            formData.append('content', body.form.content)
+        }else{
+            formData.append('content', '')
+        }
+
+        if(body.form.thumbnail){
+
+            formData.append('thumbnail', body.form.thumbnail, body.form.thumbnail.name)
+        }else{
+            formData.append('thumbnail', '')
+
+        }
+        
+        const request = await blogApi.put(`/blog/${body.slug}/`, formData, {
+            headers:  body.headers,
+            params: body.params
+        })    
+        const response = request.data/*.message
+        const blogsObject = {}    
+        const data = []
+        data.push({
+            id: response.id,
+            title: response.title,
+            slug: response.slug,
+            thumbnail: response.thumbnail,
+            category: response.category,
+            description: response.description,
+            content: response.content,
+            status: response.status,
+            time_read: response.time_read,
+            published: response.published,
+            view: response.view
+        })
+        console.log(request.status)
+        console.log(response)
+        blogsObject.data = data    
+        localStorage.setItem('blogs_detail', JSON.stringify(blogsObject))
+        //console.log(personaTable)
+        return blogsObject*/
+        return response
+    }
+    else if (lengthBody === 3){
+        let formData = new FormData()  
+        formData.append('slug', body.slug)  
+        formData.append('status', 'draft')   
+        formData.append('title', 'undefined')
+        formData.append('new_slug', 'undefined')
+        formData.append('description', 'undefined')
+        //formData.append('content', body.form.content)
+        formData.append('category', 'undefined')
+        formData.append('content', '') 
+        formData.append('thumbnail', '')
+        
+        const request = await blogApi.put(`/blog/${body.slug}/`, formData, {
+            headers:  body.headers,
+            params: body.params
+        })    
+        const response = request.data
+        return response
+
+    }
 }
