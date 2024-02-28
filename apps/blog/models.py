@@ -6,6 +6,7 @@ from apps.category.models import Category
 
 User = settings.AUTH_USER_MODEL
 
+
 def blog_thumbnail_directory(instance, filename):
     return 'blog/{0}/{1}'.format(instance.title, filename)
 
@@ -14,6 +15,10 @@ class Post(models.Model):
     class PostObjects(models.Manager):
         def get_queryset(self):
             return super().get_queryset().filter(status='published')
+
+    class PostObjectsDashboard(models.Manager):
+        def get_queryset(self):
+            return super().get_queryset().all()#.filter(status='draft')
 
     class Meta:
         ordering = ('-published',)
@@ -36,6 +41,7 @@ class Post(models.Model):
     view = models.IntegerField(default=0, blank=True)
     objects = models.Manager()  # default manager
     post_objects = PostObjects()  # custom manager
+    post_objects_dashboard = PostObjectsDashboard()  # custom manager
 
     def get_view_count(self):
         views = ViewCount.objects.filter(post=self).count()

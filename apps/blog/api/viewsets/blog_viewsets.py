@@ -28,6 +28,7 @@ class BlogViewSets(viewsets.ModelViewSet):
             return self.get_serializer().Meta.model.post_objects.all()
         #print(slug)
         return self.get_serializer().Meta.model.post_objects.get(slug=slug)#filter.()
+        #return self.get_serializer().Meta.model.post_objects_dashboard.get(slug=slug)#filter.()
         #return self.get_serializer().Meta.model.post_objects.filter(slug=slug)
 
     def list(self, request, *args, **kwargs):
@@ -115,9 +116,17 @@ class BlogViewSets(viewsets.ModelViewSet):
                 post.status = data['status']
                 post.save()
 
-        print(user)
-        print(data)
+        #print(user)
+        #print(data)
         return Response({'success': 'Post Edited'})
+
+    def destroy(self, request, slug=None, *args, **kwargs):
+        #print(slug)
+        post = self.get_queryset(slug)
+        #print(post)
+        post.delete()
+
+        return Response({'success': 'Post Deleted'})
 
 """
 para buscar por pk y slug
@@ -236,7 +245,7 @@ class AutorBlogViewSets(viewsets.ModelViewSet):
 
         if author is None:
             return self.get_serializer().Meta.model.post_objects.all()
-        return self.get_serializer().Meta.model.post_objects.filter(author=author)
+        return self.get_serializer().Meta.model.post_objects_dashboard.filter(author=author)
 
     def list(self, request, *args, **kwargs):
         paginator = SmallSetPagination()

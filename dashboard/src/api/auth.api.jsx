@@ -266,9 +266,9 @@ export const getBlogsDetail = async (slug) => {
 
 export const getBlogsUpdateDetail = async (body) => {
     var lengthBody = Object.keys(body).length
-    console.log('tamaño del body: ', lengthBody)
+    console.log('tamaño del body: ', lengthBody, body.params.status)
 
-    if (lengthBody === 4){
+    if (body.params.status === 'undefined'){
         let formData = new FormData()    
         formData.append('title', body.form.title)
         formData.append('slug', body.slug)
@@ -321,7 +321,7 @@ export const getBlogsUpdateDetail = async (body) => {
         return blogsObject*/
         return response
     }
-    else if (lengthBody === 3){
+    else if (body.params.status === 'draft'){
         let formData = new FormData()  
         formData.append('slug', body.slug)  
         formData.append('status', 'draft')   
@@ -339,6 +339,35 @@ export const getBlogsUpdateDetail = async (body) => {
         })    
         const response = request.data
         return response
-
     }
+    else if (body.params.status === 'published'){
+        let formData = new FormData()  
+        formData.append('slug', body.slug)  
+        formData.append('status', 'published')   
+        formData.append('title', 'undefined')
+        formData.append('new_slug', 'undefined')
+        formData.append('description', 'undefined')
+        //formData.append('content', body.form.content)
+        formData.append('category', 'undefined')
+        formData.append('content', '') 
+        formData.append('thumbnail', '')
+        
+        const request = await blogApi.put(`/blog/${body.slug}/`, formData, {
+            headers:  body.headers,
+            params: body.params
+        })    
+        const response = request.data
+        return response
+    }
+}
+
+export const getBlogsDeleteDetail = async (body) => {    
+                       
+        const request = await blogApi.delete(`/blog/${body.slug}/`, {}, {
+            headers:  body.headers,
+            params: body.params
+        })    
+        const response = request.data
+
+        return response    
 }
