@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from ckeditor.fields import RichTextField
+import uuid
 from apps.category.models import Category
 
 User = settings.AUTH_USER_MODEL
@@ -28,15 +29,15 @@ class Post(models.Model):
         ('published', 'Published'),
     )
 
-    title = models.CharField(max_length=50)
-    slug = models.SlugField(max_length=50, unique=True)
-    thumbnail = models.ImageField(upload_to=blog_thumbnail_directory, max_length=500)
+    title = models.CharField(max_length=50, blank=True, null=True)
+    slug = models.SlugField(max_length=50, unique=True, default=uuid.uuid4())
+    thumbnail = models.ImageField(upload_to=blog_thumbnail_directory, max_length=500, blank=True, null=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.PROTECT)
-    description = models.CharField(max_length=100)
-    content = RichTextField()
+    category = models.ForeignKey(Category, on_delete=models.PROTECT, blank=True, null=True)
+    description = models.CharField(max_length=100, blank=True, null=True)
+    content = RichTextField(blank=True, null=True)
     status = models.CharField(max_length=10, choices=options, default='draft')
-    time_read = models.IntegerField()
+    time_read = models.IntegerField(blank=True, null=True)
     published = models.DateField(default=timezone.now)
     view = models.IntegerField(default=0, blank=True)
     objects = models.Manager()  # default manager
@@ -48,7 +49,7 @@ class Post(models.Model):
         return views
 
     def __str__(self):
-        return self.title
+        return self.title if self.title else "No title"
 
 
 class ViewCount(models.Model):

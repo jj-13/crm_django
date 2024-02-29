@@ -47,6 +47,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('apps.blog.api.routers')),
     path('api/', include('apps.category.api.routers')),
+    path('api/', include('apps.contact.api.routers')),
 
 ]
 urlpatterns += [

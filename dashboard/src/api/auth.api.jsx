@@ -215,6 +215,17 @@ export const getAuthorBlogsPage = async (body) => {
     return blogsObject
 }
 
+export const getBlogsCreate = async (body) => {    
+                       
+    const request = await blogApi.post(`/blog/`, {}, {
+        headers:  body.headers,
+        params: body.params
+    })    
+    const response = request.data
+
+    return response    
+}
+
 export const getCategories = async () => {
     const request = await blogApi.get('/categories/')
     const response = request.data
@@ -276,6 +287,7 @@ export const getBlogsUpdateDetail = async (body) => {
         formData.append('description', body.form.description)
         //formData.append('content', body.form.content)
         formData.append('category', body.form.category)
+        formData.append('time_read', body.form.time_read)
         formData.append('status', 'undefined')
         //formData.append('thumbnail', body.form.thumbnail, body.form.thumbnail.name)
 
@@ -332,6 +344,7 @@ export const getBlogsUpdateDetail = async (body) => {
         formData.append('category', 'undefined')
         formData.append('content', '') 
         formData.append('thumbnail', '')
+        formData.append('time_read','')
         
         const request = await blogApi.put(`/blog/${body.slug}/`, formData, {
             headers:  body.headers,
@@ -351,6 +364,7 @@ export const getBlogsUpdateDetail = async (body) => {
         formData.append('category', 'undefined')
         formData.append('content', '') 
         formData.append('thumbnail', '')
+        formData.append('time_read','')
         
         const request = await blogApi.put(`/blog/${body.slug}/`, formData, {
             headers:  body.headers,
@@ -363,11 +377,11 @@ export const getBlogsUpdateDetail = async (body) => {
 
 export const getBlogsDeleteDetail = async (body) => {    
                        
-        const request = await blogApi.delete(`/blog/${body.slug}/`, {}, {
-            headers:  body.headers,
-            params: body.params
-        })    
-        const response = request.data
+    const request = await blogApi.delete(`/blog/${body.slug}/`, {}, {
+        headers:  body.headers,
+        params: body.params
+    })    
+    const response = request.data
 
-        return response    
+    return response    
 }

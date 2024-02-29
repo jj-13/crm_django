@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import {Layout} from '../../../hocks/layouts/Layout'
 import { category } from "../../../Store/CategoriesSlice"
 import { BlogList } from "../../../components/blog/BlogList"
-import { authorBlogPages } from "../../../Store/Blog"
+import { authorBlogPages, authorBlogCreate } from "../../../Store/Blog"
 import { selecAuthorBlogs } from "../../../Store/Selector"
 
 function getCategories(){
@@ -95,6 +95,38 @@ export const Blog = () => {
     fetchData()
   }
 
+  function createBlog() {
+    const fetchData = async () => {
+
+        const body = {                        
+            headers: {                                    
+                'Accept': 'application/json',  
+                'Content-Type': 'multipart/form-data', // Agrega el encabezado Content-Type: application/json 
+                'Authorization': `JWT ${access.data[0].access}`
+            }, 
+            params:{
+                user: authorBlogsPages.email
+            }
+        }   
+
+        try{
+            await dispatch(authorBlogCreate(body))
+            authorBlogsPages
+
+        }
+        catch (error){
+            setLoading(false)
+            console.log("Error fetching Create data:", error)
+        }
+        finally{
+            //setLoading(false)
+        }
+
+    }
+
+    fetchData()
+}
+
   return (
     <Layout>
           <div className="border-b border-gray-200 bg-white px-4 py-5 sm:px-6">
@@ -108,6 +140,7 @@ export const Blog = () => {
                 <div className="ml-4 mt-4 flex-shrink-0">
                 <button
                     onClick={()=>{
+                      createBlog()
                         /*const config = {
                             headers: {
                                 'Accept': 'application/json',

@@ -63,6 +63,25 @@ export const EditPost = () => {
   const {register, handleSubmit, trigger,
     formState:{errors}, watch, setValue, reset} = useForm()
 
+  const [updateTitle, setUpdateTitle]=useState(false)
+  const [updateSlug, setUpdateSlug]=useState(false)
+  const [updateDescription, setUpdateDescription]=useState(false)
+  const [updateContent, setUpdateContent]=useState(false)
+  const [updateCategory, setUpdateCategory]=useState(false)
+  const [updateThumbnail, setUpdateThumbnail]=useState(false)
+  const [updateTime, setUpdateTime]=useState(false)
+  const [content, setContent]=useState('')
+
+  const resetStates = () => {
+    setUpdateTitle(false)
+    setUpdateSlug(false)
+    setUpdateDescription(false)
+    setUpdateContent(false)
+    setUpdateCategory(false)
+    setUpdateThumbnail(false)
+    setUpdateTime(false)
+  }
+
   const params = useParams()
   const slug = params.slug
   
@@ -78,11 +97,7 @@ export const EditPost = () => {
         } catch (error) {
             console.error("Error fetching blog details:", error)
             setLoading(false)
-            setUpdateTitle(false)
-            setUpdateSlug(false)
-            setUpdateDescription(false)
-            setUpdateContent(false)
-            setUpdateCategory(false)
+            resetStates()
             if(thumbnail){
                 setThumbnail(null)
                 setPreviewImage(null)
@@ -93,11 +108,7 @@ export const EditPost = () => {
         } finally {
             // Set loading to false after the fetch operation completes
             setLoading(false)
-            setUpdateTitle(false)
-            setUpdateSlug(false)
-            setUpdateDescription(false)
-            setUpdateContent(false)
-            setUpdateCategory(false)
+            resetStates()
             if(thumbnail){
                 setThumbnail(null)
                 setPreviewImage(null)
@@ -111,27 +122,6 @@ export const EditPost = () => {
     fetchData();
 
   }, [categories, dispatch, slug])
-
- 
-
-  const [updateTitle, setUpdateTitle]=useState(false)
-  const [updateSlug, setUpdateSlug]=useState(false)
-  const [updateDescription, setUpdateDescription]=useState(false)
-  const [updateContent, setUpdateContent]=useState(false)
-  const [updateCategory, setUpdateCategory]=useState(false)
-  const [updateThumbnail, setUpdateThumbnail]=useState(false)
-const [updateTime, setUpdateTime]=useState(false)
-  const [content, setContent]=useState('')
-
-const resetStates = () => {
-    setUpdateTitle(false)
-    setUpdateSlug(false)
-    setUpdateDescription(false)
-    setUpdateContent(false)
-    setUpdateCategory(false)
-    setUpdateThumbnail(false)
-    setUpdateTime(false)
-}
 
 const fileSelectedHandler = (e)=> {
     const file = e.target.files[0]
@@ -287,6 +277,8 @@ const onSubmit = handleSubmit( (data) => {
                     content: data.content,
                     category: data.category,
                     thumbnail: thumbnail,
+                    time_read: data.time_read,
+
 
                 },                            
                 headers: {                                    
@@ -320,11 +312,7 @@ const onSubmit = handleSubmit( (data) => {
                                 await dispatch(blogDetail(slug))
                             } 
                             setLoading(false)
-                            setUpdateTitle(false)
-                            setUpdateSlug(false)
-                            setUpdateDescription(false)
-                            setUpdateContent(false)
-                            setUpdateCategory(false)
+                            resetStates()
                             if(thumbnail){
                                 setThumbnail(null)
                                 setPreviewImage(null)
@@ -335,12 +323,7 @@ const onSubmit = handleSubmit( (data) => {
                             
                         } catch (error) {
                             setLoading(false)
-                            setUpdateTitle(false)
-                            setUpdateSlug(false)
-                            setUpdateDescription(false)
-                            setUpdateContent(false)
-                            setUpdateCategory(false)
-                            setUpdateThumbnail(false)
+                            resetStates()
                             if(thumbnail){
                                 setThumbnail(null)
                                 setPreviewImage(null)
@@ -352,12 +335,7 @@ const onSubmit = handleSubmit( (data) => {
                         } finally {
                             // Set loading to false after the fetch operation completes
                             setLoading(false)
-                            setUpdateTitle(false)
-                            setUpdateSlug(false)
-                            setUpdateDescription(false)
-                            setUpdateContent(false)
-                            setUpdateCategory(false)
-                            setUpdateThumbnail(false)
+                            resetStates()
                             if(thumbnail){
                                 setThumbnail(null)
                                 setPreviewImage(null)
@@ -373,12 +351,7 @@ const onSubmit = handleSubmit( (data) => {
                 }
             }).catch((error) => {
                 setLoading(false)
-                setUpdateTitle(false)
-                setUpdateSlug(false)
-                setUpdateDescription(false)
-                setUpdateContent(false)
-                setUpdateCategory(false)
-                setUpdateThumbnail(false)
+                resetStates()
                 if(thumbnail){
                     setThumbnail(null)
                     setPreviewImage(null)
@@ -450,7 +423,7 @@ const onSubmit = handleSubmit( (data) => {
                     <dl className="divide-y divide-gray-200">
 
                         <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-                            <dt className="text-sm font-medium text-gray-500">Title</dt>
+                            <dt className="text-lg font-medium text-gray-500">Title</dt>
                             <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
                                 {
                                     updateTitle ?
@@ -504,7 +477,7 @@ const onSubmit = handleSubmit( (data) => {
                         </div>
 
                         <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-                            <dt className="text-sm font-medium text-gray-500">Slug</dt>
+                            <dt className="text-lg font-medium text-gray-500">Slug</dt>
                             <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
                                 {
                                     updateSlug ?
@@ -559,7 +532,7 @@ const onSubmit = handleSubmit( (data) => {
                         </div>
 
                         <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-                            <dt className="text-sm font-medium text-gray-500">Thumbnail</dt>
+                            <dt className="text-lg font-medium text-gray-500">Thumbnail</dt>
                             <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
                                 {
                                     updateThumbnail?
@@ -628,7 +601,7 @@ const onSubmit = handleSubmit( (data) => {
                         </div>
 
                         <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-                            <dt className="text-sm font-medium text-gray-500">Description</dt>
+                            <dt className="text-lg font-medium text-gray-500">Description</dt>
                             <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
                                 {
                                     updateDescription ?
@@ -683,7 +656,7 @@ const onSubmit = handleSubmit( (data) => {
                         </div>
 
                         <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-                            <dt className="text-sm font-medium text-gray-500">Content</dt>
+                            <dt className="text-lg font-medium text-gray-500">Content</dt>
                             <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
                                 {
                                     updateContent ?
@@ -798,7 +771,61 @@ const onSubmit = handleSubmit( (data) => {
                         </div>
 
                         <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-                            <dt className="text-sm font-medium text-gray-500">Category</dt>
+                            <dt className="text-lg font-medium text-gray-500">Time Read</dt>
+                            <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                                {
+                                    updateTime ?
+                                    <>
+                                    <form onSubmit={e=>onSubmit(e)} className="flex w-full">
+
+                                        <span className="flex-grow">
+                                            <input
+                                            name='time_read'
+                                            type='number'
+                                            className="border border-gray-400 rounded-lg w-full"
+                                            {...register('time_read', {
+                                                required: {
+                                                    value: true,
+                                                    message: "es requerido"
+                                                    }
+                                                })
+                                            }
+                                            />
+                                        </span>
+                                        <span className="ml-4 flex-shrink-0">
+                                            <button
+                                            type="submit"
+                                            className="rounded-md mr-2 bg-white font-medium text-indigo-600 hover:text-indigo-500"
+                                            >
+                                            Save
+                                            </button>
+                                            <div
+                                            onClick={()=>setUpdateTime(false)}
+                                            className="cursor-pointer inline-flex rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500"
+                                            >
+                                            Cancel
+                                            </div>
+                                        </span>
+                                    </form>
+                                    </>
+                                    :
+                                    <>
+                                        <span className="flex-grow text-lg">{authorBlogsDeatil.time_read}</span>
+                                        <span className="ml-4 flex-shrink-0">
+                                            <div
+                                            onClick={()=>setUpdateTime(true)}
+                                            className="cursor-pointer inline-flex rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500"
+                                            >
+                                            Update
+                                            </div>
+                                        </span>
+                                    </>
+                                }
+                            </dd>
+                        </div>
+
+                        <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+                            <dt className="text-lg font-medium text-gray-500">Category</dt>
                             <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
                                 {
                                     updateCategory ?
@@ -909,16 +936,25 @@ const onSubmit = handleSubmit( (data) => {
                                         </form>
                                     </>:
                                     <>
-                                        <span className="flex-grow">{authorBlogsDeatil.category.name}</span>
+                                        <span className="flex-grow text-lg">
+                                            {
+                                                authorBlogsDeatil.category ?
+        
+                                                authorBlogsDeatil.category.name
+                                                :
+                                                <p className=" w-full py-2 bg-gray-100 mt-4 text-lg font-regular text-gray-800 leading-8"></p>
+                                            }
+                                            </span>
                                         <span className="ml-4 flex-shrink-0">
-                                            <button
+                                            <div
                                             onClick={()=>setUpdateCategory(true)}
-                                            className="rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                            className="cursor-pointer inline-flex rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500"
                                             >
                                             Update
-                                            </button>
+                                            </div>
                                         </span>
                                     </>
+                                    
                                 }
                             
                             </dd>

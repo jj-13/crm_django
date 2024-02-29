@@ -10,6 +10,8 @@ import { Search } from "./containers/pages/Search"
 import { Category } from "./containers/pages/Category"
 import { Contacto } from "./containers/pages/Contacto"
 import { Nosotros } from "./containers/pages/Nosotros"
+import { TermsOfServices } from "./containers/pages/TermsOfServices"
+import { PrivacyPolicy } from "./containers/pages/PrivacyPolicy"
 
 import { AnimatePresence } from 'framer-motion'
 
@@ -33,6 +35,8 @@ function AnimatedRoutes() {
             <Route path="/blog/search" element={<Search />} />
             <Route path="/category/:slug" element={<Category />} />
             <Route path="/contacto" element={<Contacto />} />
+            <Route path="/terms" element={<TermsOfServices />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
         </Routes>
     </AnimatePresence>
   )

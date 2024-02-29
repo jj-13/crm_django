@@ -7,15 +7,16 @@ from rest_framework.response import Response
 from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from apps.blog.api.serializers.blog_serializers import PostSerializer, PostListSerializer
 from apps.blog.api.pagination import SmallSetPagination, MediumSetPagination, LargeSetPagination
+from apps.blog.models import Post
 from apps.category.models import Category
 from apps.blog.models import ViewCount
-from apps.blog.permissions import IsPostAuthorOrReadOnly
+from apps.blog.permissions import IsPostAuthorOrReadOnly, AuthorPermission
 from slugify import slugify
 
 
 class BlogViewSets(viewsets.ModelViewSet):
     #permission_classes = (permissions.AllowAny,)
-    permission_classes = (IsPostAuthorOrReadOnly, )
+    permission_classes = (IsPostAuthorOrReadOnly, AuthorPermission)
     serializer_class = PostSerializer
     parser_classes = [JSONParser, MultiPartParser, FormParser]
     lookup_field = 'slug'  # This tells Django to use 'slug' instead of 'pk'
@@ -30,6 +31,11 @@ class BlogViewSets(viewsets.ModelViewSet):
         return self.get_serializer().Meta.model.post_objects.get(slug=slug)#filter.()
         #return self.get_serializer().Meta.model.post_objects_dashboard.get(slug=slug)#filter.()
         #return self.get_serializer().Meta.model.post_objects.filter(slug=slug)
+
+    def create(self, request, *args, **kwargs):
+        user = self.request.user
+        Post.objects.create(author=user)
+        return Response({'success': 'Post Created'}, status=status.HTTP_201_CREATED)
 
     def list(self, request, *args, **kwargs):
         paginator = SmallSetPagination()
@@ -92,6 +98,11 @@ class BlogViewSets(viewsets.ModelViewSet):
         if data['description']:
             if not (data['description'] == 'undefined'):
                 post.description = data['description']
+                post.save()
+
+        if data['time_read']:
+            if not (data['time_read'] == 'undefined'):
+                post.time_read = data['time_read']
                 post.save()
 
         if data['content']:

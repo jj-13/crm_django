@@ -32,7 +32,7 @@ export const BlogCardHorizontal = ({data, index}) => {
                     data.thumbnail?
                     <img id={index} className="h-64 lg:w-96 w-full object-cover rounded" src={data.thumbnail} alt="" />
                     :
-                    <div className=" h-64 lg:w-96 w-full object-cover rounded bg-gray-100"></div>
+                    <div id={index} className=" h-64 lg:w-96 w-full object-cover rounded bg-gray-100"></div>
                   }
                 </figure>
                 <div className="min-w-0 flex-1 px-8 p-4 ">
@@ -40,7 +40,7 @@ export const BlogCardHorizontal = ({data, index}) => {
                     data.title ?
                     <p id={`title`+data.id} className=" lg:mt-0 lg:absolute lg:top-4 leading-10 text-3xl pb-4 font-semibold transition duration-300 ease-in-out">{data.title.length > 80 ? data.title.slice(0,79):data.title}</p>
                     :
-                    <p className=" lg:mt-0 lg:absolute lg:top-4 leading-10 text-3xl pb-4 font-semibold transition duration-300 ease-in-out w-72 py-2 bg-gray-100"></p>
+                    <p id={`title`+data.id} className=" lg:mt-0 lg:absolute lg:top-4 leading-10 text-3xl pb-4 font-semibold transition duration-300 ease-in-out w-72 py-2 bg-gray-100"></p>
                   }
                   
                   <div className="lg:absolute lg:top-28">
