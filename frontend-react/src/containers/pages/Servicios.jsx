@@ -8,12 +8,12 @@ import coding_img from '../../assets/img/services/coding.png'
 
 const posts_software = [
   {
-    title: 'Boost your conversion rate',
+    title: 'JavaScript Developer',
     img: coding_img,
-    href: '#',
-    category: { name: 'Article', href: '#' },
+    href: '/servicios/javascript',
+    category: { name: 'Developmet', href: '#' },
     description:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto accusantium praesentium eius, ut atque fuga culpa, similique sequi cum eos quis dolorum.',
+      'Talented and agile JavaScript developers for your project, available 24/7.',
     date: 'Mar 16, 2020',
     datetime: '2020-03-16',
     imageUrl:
@@ -155,10 +155,14 @@ export const Servicios = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <Navbar />
         <div className="pt-28">
-          {/*<Header/>*/}
-          <Header/>
-          <ServicesList posts={posts_software} section_title={'Software and Product Development'}/>
-          <ServicesList posts={posts_design} section_title={'Design Services'}/>
+          <div className="mx-auto max-w-1700 px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-1700">
+              {/*<Header/>*/}
+              <Header/>
+              <ServicesList posts={posts_software} section_title={'Software and Product Development'}/>
+              <ServicesList posts={posts_design} section_title={'Design Services'}/>
+            </div>
+          </div>
         </div>            
         <Footer />
     </Layout>

@@ -1,6 +1,26 @@
-import { Typewriter } from 'react-simple-typewriter'
-import { Link } from 'react-router-dom'
-const navigation = {  
+
+const navigation = {
+  solutions: [
+    { name: 'Marketing', href: '#' },
+    { name: 'Analytics', href: '#' },
+    { name: 'Commerce', href: '#' },
+    { name: 'Insights', href: '#' },
+  ],
+  support: [
+      { name: 'Contacto', href: '/contacto' },
+  ],
+  company: [
+      { name: 'Casos', href: '/casos' },
+      { name: 'Servicios', href: '/servicios' },
+      { name: 'Nosotros', href: '/nosotros' },
+      { name: 'Carreras', href: '/carreras' },
+      { name: 'Blog', href: '/blog' },
+  ],
+  legal: [
+    { name: 'Claim', href: '#' },
+    { name: 'Privacy', href: '#' },
+    { name: 'Terms', href: '#' },
+  ],
   social: [
     {
       name: 'Facebook',
@@ -70,31 +90,16 @@ export const Header = () => {
   return (
     <main>
     <div className="relative">
-      <div className="mx-auto max-w-full xl:mx-12 xl:pt-40 xl:pb-64 lg:pt-40 lg:pb-48 pt-24 pb-12">
+      <div className="mx-auto max-w-full xl:mx-12 xl:pt-40 xl:pb-64 lg:pt-40 lg:pb-48 pt-24 pb-12 ">
         <div>
           <div>
-            <h1 className="text-4xl font-semibold tracking-tight pb-16 sm:text-7xl">
-            Agency for <span> </span>
-                <Typewriter
-                      words={['Dreamers', 'Creators', 'You!']}
-                      loop={0}
-                      cursor
-                      
-                      cursorStyle='_'
-                      typeSpeed={120}
-                      deleteSpeed={50}
-                      delaySpeed={1000}
-                      // onLoopDone={handleDone}
-                      // onType={handleType}
-                  />
+            <h1 className="text-4xl font-semibold tracking-tight pb-16  sm:text-7xl">
+              Javascript Development
             </h1>
             <p className="mt-16 text-2xl max-w-3xl leading-8 text-black ">
-            Jumpstart today your business with one of our services that range from <span className='lg:text-xl text-md font-medium leading-8 text-gray-700 sm:text-center  transition duration-300 ease-in-out border-b-2 border-transparent hover:border-orange-button'><Link to='/'>Web Development</Link></span> 
-            <span className='mx-1 lg:text-xl text-md font-medium leading-8 text-gray-700 sm:text-center transition duration-300 ease-in-out border-b-2 border-transparent hover:border-orange-button'><Link to='/'> App Development</Link></span>
-            <span className='mx-1 lg:text-xl text-md font-medium leading-8 text-gray-700 sm:text-center transition duration-300 ease-in-out border-b-2 border-transparent hover:border-orange-button'><Link to='/'> Game Development</Link></span>
-            <span className='mx-1 lg:text-xl text-md font-medium leading-8 text-gray-700 sm:text-center transition duration-300 ease-in-out border-b-2 border-transparent hover:border-orange-button'><Link to='/'> Digital Marketing</Link></span>
+            We love to shake established thought-patterns and create what has never been attempted before. We take seeds and grow jungles
             </p>
-            <div className="absolute bottom-0 left-0 flex space-x-6 xl:mx-12 mx-0">
+            <div className="absolute bottom-0 left-0 flex space-x-6 mx-12">
             {navigation.social.map((item) => (
               <a key={item.name} href={item.href} className="text-gray-900 hover:text-gray-800">
                 <span className="sr-only">{item.name}</span>

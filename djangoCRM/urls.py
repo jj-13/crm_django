@@ -48,6 +48,7 @@ urlpatterns = [
     path('api/', include('apps.blog.api.routers')),
     path('api/', include('apps.category.api.routers')),
     path('api/', include('apps.contact.api.routers')),
+    path('api/v1/', include('apps.contact.api.urls')),
 
 ]
 urlpatterns += [

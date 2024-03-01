@@ -1,15 +1,16 @@
 import PropTypes from 'prop-types'
+import { Link } from "react-router-dom"
 
 export const ServiceCard = ({data, index}) => {
   return (
     <div
         onMouseEnter={()=>{
-            const title_element = document.getElementById(index)
+            const title_element = document.getElementById(`learn` + index)
             title_element.classList.add('text-orange-500')
             title_element.classList.remove('text-gray-900')
         }} 
         onMouseLeave={()=>{
-            const title_element = document.getElementById(index)
+            const title_element = document.getElementById(`learn` + index)
             title_element.classList.remove('text-orange-500')
             title_element.classList.add('text-gray-900')
         }} 
@@ -17,10 +18,10 @@ export const ServiceCard = ({data, index}) => {
             <div className="w-full ">
                 <img src={data.img} className='w-10 h-10'/>
                 <h2 className="text-xl font-semibold text-gray-900 pt-8">{data.title}</h2>
-                <p className="text-lg font-regular text-gray-500 pt-4">{data.title}</p>
+                <p className="text-lg font-regular text-gray-500 pt-4">{data.description}</p>
             </div>
             <div className="absolute bottom-0 left-0 p-8">
-                <h2 id={index} className="items-end text-xl font-semibold text-gray-900 pt-8">learn More</h2>
+            <Link to={data.href} id={`learn`+index} className="items-end text-xl font-semibold text-gray-900 pt-8">Learn More</Link>
             </div>
     </div>
   )

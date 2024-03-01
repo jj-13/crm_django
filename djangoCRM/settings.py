@@ -241,6 +241,8 @@ DJOSER = {
 AUTH_USER_MODEL = 'user.User'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+ACTIVE_CAMPAIGN_KEY = os.environ.get('ACTIVE_CAMPAIGN_KEY')
+ACTIVE_CAMPAIGN_URL = os.environ.get('ACTIVE_CAMPAIGN_URL')
 
 if not DEBUG:
     ALLOWED_HOSTS = env.list('ALLOWED_HOSTS_DEPLOY')

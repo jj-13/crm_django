@@ -6,7 +6,7 @@ const navigation = {
       { name: 'Insights', href: '#' },
     ],
     support: [
-        { name: 'Contacto', href: '/contacto' },
+        { name: 'Contacto', href: '/contacto' },        
     ],
     company: [
         { name: 'Casos', href: '/casos' },
@@ -19,6 +19,7 @@ const navigation = {
       { name: 'Claim', href: '#' },
       { name: 'Privacy', href: '/privacy' },
       { name: 'Terms', href: '/terms' },
+      { name: 'Ebook', href: '/ebook' },
     ],
     social: [
       {
